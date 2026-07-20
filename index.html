@@ -107,16 +107,106 @@
       </section>
 
       <section class="live-setup hidden" id="live-setup" aria-labelledby="live-setup-title">
-        <div>
+        <div class="live-guide">
           <p class="eyebrow">Connect live data</p>
-          <h2 id="live-setup-title">Keep the template. Add a private data helper.</h2>
-          <p>Your complete dashboard is already here. The only extra piece is a private Cloudflare Worker that receives Hospitable updates and safely supplies this page.</p>
-          <ol class="setup-summary">
-            <li>Follow the child-friendly Cloudflare, Hospitable, and PriceLabs steps in the repository guide.</li>
-            <li>Deploy the included private Worker. Your AI helper may run commands, but you personally sign in and add secrets.</li>
-            <li>Open your private Worker link, then enter your dashboard access code below. API keys never go in this form.</li>
-          </ol>
-          <p class="small-copy">Read <a href="https://github.com/zlevesque/str-mission-control/blob/main/docs/LIVE-SETUP-OUTLINE.md" target="_blank" rel="noreferrer">the full live-setup guide</a> before connecting a real property.</p>
+          <h2 id="live-setup-title">You keep this dashboard. We only connect your private data.</h2>
+          <p>Take these steps in order. You are not designing anything, choosing cards, or sharing your account passwords with an AI.</p>
+
+          <aside class="safety-note" aria-label="Keep your information safe">
+            <strong>🔒 Tiny safety rule</strong>
+            <p>Never put an API key, password, webhook link, guest phone number, door code, or Wi-Fi detail into this page, GitHub, or an AI chat.</p>
+          </aside>
+
+          <div class="setup-steps">
+            <details class="setup-step" open>
+              <summary><span class="step-number">1</span><span><strong>Make or sign in to Cloudflare</strong><small>This is the private home for your data helper.</small></span></summary>
+              <div class="setup-step-body">
+                <ol>
+                  <li>Open <a href="https://dash.cloudflare.com/sign-up" target="_blank" rel="noreferrer">Cloudflare</a> in a normal browser tab.</li>
+                  <li>Choose <strong>Sign up</strong> if you are new, or sign in if you already have an account.</li>
+                  <li>Finish any email-verification step Cloudflare asks for.</li>
+                  <li>Stop when you see the Cloudflare dashboard. You do not need to make a random project yet.</li>
+                </ol>
+              </div>
+            </details>
+
+            <details class="setup-step">
+              <summary><span class="step-number">2</span><span><strong>Let a coding helper do the computer chores</strong><small>It installs the private helper; it does not rebuild your dashboard.</small></span></summary>
+              <div class="setup-step-body">
+                <ol>
+                  <li>Open your downloaded <code>str-mission-control</code> folder in Codex, Claude Code, or another coding helper.</li>
+                  <li>Tell it: <q>Open <code>worker/README.md</code> and set up only the <code>worker</code> folder. Do not redesign the dashboard. Stop whenever I need to sign in or enter a secret.</q></li>
+                  <li>It may run a command that opens Cloudflare in your browser. <strong>You</strong> sign in and approve the connection there.</li>
+                  <li>Do not paste a Cloudflare password, API key, or secret into the coding chat.</li>
+                </ol>
+              </div>
+            </details>
+
+            <details class="setup-step">
+              <summary><span class="step-number">3</span><span><strong>Put your private helper online</strong><small>Cloudflare calls it a Worker. Think of it as a tiny locked receptionist.</small></span></summary>
+              <div class="setup-step-body">
+                <ol>
+                  <li>Your helper runs <code>npm install</code> inside the <code>worker</code> folder.</li>
+                  <li>When it runs <code>npx wrangler login</code>, Cloudflare opens in your browser. Sign in and approve it yourself.</li>
+                  <li>It runs <code>npx wrangler kv namespace create MISSION_CONTROL</code>. Copy the long ID Cloudflare shows; it is an identifier, not a password.</li>
+                  <li>It replaces <code>REPLACE_WITH_YOUR_KV_NAMESPACE_ID</code> in <code>worker/wrangler.jsonc</code>, then changes the two friendly names for your business and property.</li>
+                  <li>It runs <code>npm run deploy</code>. Copy the new web address ending in <code>workers.dev</code>. This is your private Mission Control address.</li>
+                  <li>Open that address. You should see this same dashboard. Add <code>/health</code> to the end; a small “Worker is running” message means it worked.</li>
+                </ol>
+              </div>
+            </details>
+
+            <details class="setup-step">
+              <summary><span class="step-number">4</span><span><strong>Make two private access codes in Cloudflare</strong><small>These stay in Cloudflare, never in this form.</small></span></summary>
+              <div class="setup-step-body">
+                <ol>
+                  <li>Use your password manager to make two different long random strings. Keep both there.</li>
+                  <li>In Cloudflare, go to <strong>Workers &amp; Pages</strong>, choose your Worker, then choose <strong>Settings → Variables and Secrets → Add</strong>.</li>
+                  <li>Choose <strong>Secret</strong>, then add <code>DASHBOARD_ACCESS_TOKEN</code> with your first random string.</li>
+                  <li>Add a second Secret named <code>HOSPITABLE_WEBHOOK_SECRET</code> with your second random string.</li>
+                  <li>Click <strong>Deploy</strong> or save after each one. Cloudflare will hide the values afterward—that is expected.</li>
+                </ol>
+              </div>
+            </details>
+
+            <details class="setup-step">
+              <summary><span class="step-number">5</span><span><strong>Tell Hospitable where to send reservations</strong><small>This is the one-time “doorbell” connection.</small></span></summary>
+              <div class="setup-step-body">
+                <ol>
+                  <li>Make this private address in your password manager: <code>YOUR-WORKER-ADDRESS/webhooks/hospitable?key=YOUR_HOSPITABLE_WEBHOOK_SECRET</code>.</li>
+                  <li>In Hospitable, choose <strong>Apps → Webhooks</strong>, stay on the first <strong>Webhooks</strong> tab, then click <strong>+ Add new</strong>.</li>
+                  <li>Name it <code>Mission Control</code>, paste that private address, and select <strong>Reservations</strong>. Add <strong>Reviews</strong> if you want review-follow-up flags.</li>
+                  <li>Save it. Only use Hospitable’s <strong>Test</strong> button after checking the address is your own Worker; the test can use real guest information.</li>
+                  <li>Use the webhook’s three-dot menu and choose <strong>Send historic webhooks</strong> to bring in accepted reservations.</li>
+                </ol>
+                <p class="microcopy"><a href="https://help.hospitable.com/en/articles/10008203-webhooks-for-reservations-properties-messages-and-reviews" target="_blank" rel="noreferrer">Open Hospitable’s official webhook instructions</a> if their menus look different.</p>
+              </div>
+            </details>
+
+            <details class="setup-step">
+              <summary><span class="step-number">6</span><span><strong>Come back to this form and connect</strong><small>Almost there—this form needs only your Worker address and access code.</small></span></summary>
+              <div class="setup-step-body">
+                <ol>
+                  <li>Paste your <code>workers.dev</code> address in the first box on the right.</li>
+                  <li>Paste the value you saved as <code>DASHBOARD_ACCESS_TOKEN</code> in the second box.</li>
+                  <li>Click <strong>Connect this dashboard</strong>. Your sample stays will be replaced with your protected dashboard data.</li>
+                </ol>
+              </div>
+            </details>
+
+            <details class="setup-step">
+              <summary><span class="step-number">7</span><span><strong>Optional: add PriceLabs pricing</strong><small>Hospitable gives bookings; PriceLabs adds rate context.</small></span></summary>
+              <div class="setup-step-body">
+                <ol>
+                  <li>In PriceLabs, go to <strong>Account Settings → API Details → Enable → I Need API Access</strong>.</li>
+                  <li>Type <code>API</code> when it asks, then copy the key.</li>
+                  <li>Back in Cloudflare, add it as a Secret named <code>PRICELABS_API_KEY</code> and deploy the change.</li>
+                  <li>Reconnect this dashboard, click <strong>Find my PriceLabs listings</strong>, choose your property, then click <strong>Use this PriceLabs listing</strong>.</li>
+                </ol>
+                <p class="microcopy">PriceLabs MCP is optional for AI analysis. The private Customer API is what powers the dashboard. <a href="https://developers.pricelabs.co/customer-api/api-reference/enable-the-api" target="_blank" rel="noreferrer">Open PriceLabs’ official API instructions</a>.</p>
+              </div>
+            </details>
+          </div>
         </div>
         <form class="live-connect-form" id="live-connect-form">
           <label for="worker-url">Your private Worker address <span>(a web link, not a secret)</span><input id="worker-url" type="url" placeholder="https://your-mission-control.workers.dev" autocomplete="url" /></label>
