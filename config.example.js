@@ -15,12 +15,14 @@ window.STR_MISSION_CONTROL_CONFIG = {
     occupancy: true,
     reviews: true,
     maintenance: true,
-    revenue: false,
+    revenue: true,
   },
   checklist: [
+    "Guest needs confirmed",
     "House rules confirmed",
     "Pet details confirmed",
-    "Special occasion noted",
+    "Personal touch planned",
+    "Pre-arrival message scheduled",
     "Arrival prep complete",
   ],
 };

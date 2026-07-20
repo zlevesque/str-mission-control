@@ -5,6 +5,7 @@ This repository is public. Treat every file as if anyone can read it.
 Never commit or paste:
 
 - Hospitable personal-access tokens
+- PriceLabs API keys or MCP connection credentials
 - Cloudflare secrets or dashboard passwords
 - Door codes, Wi-Fi names/passwords, alarm details, or lock information
 - Guest names, email addresses, phone numbers, reservation codes, or message text
