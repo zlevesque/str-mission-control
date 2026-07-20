@@ -1,6 +1,6 @@
 # Design lock — keep the dashboard looking like this
 
-This starter is not a wireframe or an idea for an AI to rebuild. It is the actual STR Mission Control design.
+This starter is not a wireframe or an idea for an AI to rebuild. It is the actual complete STR Mission Control design.
 
 ## Files that stay exactly as they are
 
@@ -8,17 +8,17 @@ This starter is not a wireframe or an idea for an AI to rebuild. It is the actua
 - `style.css`
 - `app.js`
 
-Those files control the page structure, warm linen styling, spacing, cards, tabs, flags, guest workflow, and core demo behavior. Do not edit them while setting up a personal dashboard.
+Those files control the page structure, warm linen styling, spacing, cards, tabs, Calendar, Resources, flags, guest workflow, and core demo behavior. Do not edit them while connecting a personal dashboard.
 
 ## Files that are safe to personalize
 
-- `config.js` — business name, property name, selected existing cards, and checklist labels.
-- `live-data-adapter.js` — code that reads a private, authenticated dashboard response and hands it to the existing app.
-- `worker/` — a new private Cloudflare Worker folder for Hospitable/PriceLabs connections, secrets, webhooks, and shared data.
+- `config.js` — safe demo labels and an optional private Worker address. No secrets.
+- `live-data-adapter.js` — the browser bridge that reads a private, authenticated Worker response.
+- `worker/` — the included private Cloudflare Worker for Hospitable/PriceLabs connections, secrets, webhooks, and shared data.
 
 ## The simple rule for an AI helper
 
-> Keep the existing dashboard exactly as it looks. Do not make a new UI. Do not edit the locked files. Only personalize `config.js` and add the private connection outside the dashboard design files.
+> Keep the existing dashboard exactly as it looks. Do not make a new UI. Do not edit the locked files. Install and configure the private connection inside `worker/`.
 
 After setup, run this check from the project folder:
 

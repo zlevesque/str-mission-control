@@ -1,0 +1,25 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "str-mission-control-private",
+  "main": "src/index.js",
+  "compatibility_date": "2026-07-20",
+  "assets": {
+    "directory": "./.assets",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*", "/webhooks/*", "/health"]
+  },
+  "kv_namespaces": [
+    {
+      "binding": "MISSION_CONTROL",
+      "id": "REPLACE_WITH_YOUR_KV_NAMESPACE_ID"
+    }
+  ],
+  "vars": {
+    "BUSINESS_NAME": "My Stay Company",
+    "PROPERTY_NAME": "My First Property",
+    "HOSPITABLE_PROPERTY_ID": ""
+  },
+  "secrets": {
+    "required": ["DASHBOARD_ACCESS_TOKEN", "HOSPITABLE_WEBHOOK_SECRET"]
+  }
+}

@@ -3,57 +3,33 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="A fake-data STR operations dashboard demo and configurator." />
+    <meta name="description" content="A complete fake-data STR Mission Control template with a private live-data connection path." />
     <title>STR Mission Control</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <header class="site-header">
       <a class="wordmark" href="#top">STR <span>Mission Control</span></a>
-      <p>Dashboard starter for short-term-rental hosts</p>
+      <p>The complete operations dashboard starter for short-term-rental hosts</p>
     </header>
 
     <main id="top">
       <section class="hero" id="welcome">
         <div class="hero-copy">
           <p class="eyebrow">A calm home for busy hosts</p>
-          <h1>See your stays, tasks, and loose ends in one place.</h1>
-          <p class="lede">Click around a pretend dashboard first. When it feels useful, choose what belongs on your own version.</p>
+          <h1>One complete dashboard for every stay, task, and loose end.</h1>
+          <p class="lede">This is the whole STR Mission Control template: guest prep, reviews, flags, calendar, 5-star playbook, and service quotes. Try it with safe pretend data first; connect your private accounts only when you are ready.</p>
           <div class="hero-actions">
-            <button class="button primary" id="try-demo">Try the demo</button>
-            <button class="button secondary" id="build-mine">Build my dashboard</button>
+            <button class="button primary" id="try-demo">Try the full demo</button>
+            <button class="button secondary" id="open-live-setup">Connect my live data</button>
           </div>
-          <p class="microcopy">No login. No Hospitable account. No real guest data.</p>
+          <p class="microcopy">No card builder. No redesign. No real guest data in this public template.</p>
         </div>
         <div class="hero-card">
           <span class="hero-icon">⌘</span>
-          <p><strong>Practice mode</strong></p>
-          <p>The demo looks live, but every name, stay, and task is made up. Your clicks reset when you refresh.</p>
+          <p><strong>One finished dashboard</strong></p>
+          <p>Every host starts with the same complete operating system. Your private connection simply swaps the fake examples for your own protected data.</p>
         </div>
-      </section>
-
-      <section class="builder hidden" id="builder" aria-labelledby="builder-title">
-        <div>
-          <p class="eyebrow">Step 1 of 2</p>
-          <h2 id="builder-title">Pick what you want to see.</h2>
-          <p>There are no wrong answers. You can change these later.</p>
-        </div>
-        <form id="builder-form" class="builder-form">
-          <label>Business name<input id="business-name" value="Maple Stay Co." maxlength="50" /></label>
-          <label>First property name<input id="property-name" value="The Maple House" maxlength="50" /></label>
-          <fieldset>
-            <legend>Choose your dashboard cards</legend>
-            <label class="choice"><input type="checkbox" data-module="guestOps" checked /> Guest arrivals and prep</label>
-            <label class="choice"><input type="checkbox" data-module="occupancy" checked /> Occupancy snapshot</label>
-            <label class="choice"><input type="checkbox" data-module="reviews" checked /> Review follow-up</label>
-            <label class="choice"><input type="checkbox" data-module="maintenance" checked /> Repairs and supplies</label>
-            <label class="choice"><input type="checkbox" data-module="revenue" checked /> PriceLabs pricing & market pulse</label>
-          </fieldset>
-          <div class="builder-actions">
-            <button class="button primary" type="submit">Preview my dashboard</button>
-            <button class="button secondary" type="button" id="download-config">Download my settings</button>
-          </div>
-        </form>
       </section>
 
       <section class="dashboard hidden" id="dashboard" aria-live="polite">
@@ -62,11 +38,11 @@
             <p class="eyebrow" id="dashboard-business">Maple Stay Co.</p>
             <h2 id="dashboard-title">The Maple House · Mission Control</h2>
           </div>
-          <div class="demo-pill">● Demo data</div>
+          <div class="demo-pill" id="data-pill">● Sample data</div>
         </div>
 
         <div class="dashboard-controls">
-          <nav class="view-tabs" aria-label="Mission Control demo views">
+          <nav class="view-tabs" aria-label="Mission Control views">
             <button class="view-tab active" type="button" data-view="today">Today</button>
             <button class="view-tab" type="button" data-view="week">Week</button>
             <button class="view-tab" type="button" data-view="upcoming">Upcoming</button>
@@ -79,23 +55,17 @@
             <button class="toolbar-button" type="button" id="refresh-demo">Refresh</button>
           </div>
         </div>
-        <p class="demo-status" id="demo-view-status">Demo view: Today. Sync and Refresh use pretend data only.</p>
+        <p class="demo-status" id="demo-view-status">Sample data: nothing here belongs to a real guest or property.</p>
 
-        <div class="dashboard-grid">
-          <section class="main-panel" id="guest-ops-module">
-            <div class="section-heading">
-              <div><p class="eyebrow">Today</p><h3>Guest ops</h3></div>
-              <span class="count" id="stay-count"></span>
-            </div>
-            <div id="stay-list" class="stay-list"></div>
-          </section>
+        <div class="dashboard-grid" id="dashboard-grid">
+          <section class="main-panel" id="main-view"></section>
 
-          <aside class="side-panel">
+          <aside class="side-panel" id="side-panel">
             <section class="mini-card" id="occupancy-module">
-              <p class="eyebrow">Next 30 days</p>
-              <div class="metric"><strong>67%</strong><span>occupied</span></div>
-              <div class="progress"><span style="width: 67%"></span></div>
-              <p class="small-copy">Demo number only. In a real dashboard, Hospitable bookings calculate your property occupancy.</p>
+              <p class="eyebrow">Booked occupancy</p>
+              <div class="metric"><strong id="occupancy-number">67%</strong><span>next 30 days</span></div>
+              <div class="progress"><span id="occupancy-bar" style="width: 67%"></span></div>
+              <p class="small-copy" id="occupancy-copy">Sample number only. A private dashboard calculates this from Hospitable reservations.</p>
             </section>
 
             <section class="mini-card" id="reviews-module">
@@ -109,50 +79,64 @@
             </section>
 
             <section class="mini-card" id="outstanding-module">
-              <div class="section-heading compact"><div><p class="eyebrow">Outstanding</p><h3>What still needs a nudge</h3></div><span class="count">Demo</span></div>
-              <ul class="outstanding-list">
-                <li><div><strong>Priya Raman</strong><p>Guest review reminder · public response</p></div><span class="count">2 left</span></li>
-                <li><div><strong>Sam Okafor</strong><p>Pre-arrival message</p></div><span class="count">1 left</span></li>
-                <li><div><strong>Jordan Blake</strong><p>Arrival preparation</p></div><span class="count">1 left</span></li>
-              </ul>
-              <p class="small-copy">Made-up examples only. A private version can calculate this from its shared checklist.</p>
+              <div class="section-heading compact"><div><p class="eyebrow">Outstanding</p><h3>What still needs a nudge</h3></div><span class="count" id="outstanding-count">Sample</span></div>
+              <ul class="outstanding-list" id="outstanding-list"></ul>
+              <p class="small-copy">A private version calculates this from shared checklist work.</p>
             </section>
 
             <section class="mini-card flags-card" id="maintenance-module">
               <div class="section-heading compact"><div><p class="eyebrow">Flags</p><h3>Repairs & supplies</h3></div><button class="text-button" type="button" id="add-flag">+ Add</button></div>
-              <p class="small-copy">Demo flags help a host notice guest-reported issues and supply reorders. Nothing is sent anywhere.</p>
+              <p class="small-copy">Add a repair or supply reminder. In sample mode, it remains in this browser only.</p>
               <form class="add-flag-form hidden" id="add-flag-form">
-                <label for="new-flag-title">New pretend flag (no guest names or private details)<input id="new-flag-title" maxlength="80" placeholder="Example: Restock extra towels" /></label>
-                <div><button class="text-button" type="submit">Add demo flag</button><button class="text-button" type="button" id="cancel-flag">Cancel</button></div>
+                <label for="new-flag-title">New flag (keep private details out)<input id="new-flag-title" maxlength="80" placeholder="Example: Restock extra towels" /></label>
+                <div><button class="text-button" type="submit">Add flag</button><button class="text-button" type="button" id="cancel-flag">Cancel</button></div>
               </form>
               <div id="flag-list" class="flag-list"></div>
-              <p class="small-copy hidden" id="no-flags">All pretend flags are resolved.</p>
+              <p class="small-copy hidden" id="no-flags">All sample flags are resolved.</p>
             </section>
 
             <section class="mini-card" id="revenue-module">
-              <p class="eyebrow">PriceLabs pulse</p>
-              <h3>Pricing & market context</h3>
-              <div class="source-row"><strong>$247</strong><span>pretend recommended rate</span></div>
-              <div class="source-row"><strong>64%</strong><span>pretend market occupancy</span></div>
-              <p class="small-copy">PriceLabs adds rate and market context. It does not replace your actual Hospitable booking occupancy.</p>
+              <p class="eyebrow">PriceLabs</p>
+              <h3 id="revenue-title">Pricing & market context</h3>
+              <div class="source-row"><strong id="rate-number">$247</strong><span id="rate-copy">sample recommended rate</span></div>
+              <div class="source-row"><strong id="market-number">64%</strong><span id="market-copy">sample market context</span></div>
+              <p class="small-copy">PriceLabs adds pricing context. Hospitable reservations remain the source for your actual booked occupancy.</p>
             </section>
           </aside>
         </div>
       </section>
 
-      <section class="next-step hidden" id="next-step">
-        <p class="eyebrow">Step 2 of 2</p>
-        <h2>You have a dashboard shape.</h2>
-        <p>Download your dashboard settings. When you are ready for live data, use the private setup prompt without changing this design.</p>
-        <div class="hero-actions">
-          <button class="button primary" id="copy-prompt">Copy private setup prompt</button>
-          <button class="button secondary" id="edit-choices">Edit my choices</button>
+      <section class="live-setup hidden" id="live-setup" aria-labelledby="live-setup-title">
+        <div>
+          <p class="eyebrow">Connect live data</p>
+          <h2 id="live-setup-title">Keep the template. Add a private data helper.</h2>
+          <p>Your complete dashboard is already here. The only extra piece is a private Cloudflare Worker that receives Hospitable updates and safely supplies this page.</p>
+          <ol class="setup-summary">
+            <li>Follow the child-friendly Cloudflare, Hospitable, and PriceLabs steps in the repository guide.</li>
+            <li>Deploy the included private Worker. Your AI helper may run commands, but you personally sign in and add secrets.</li>
+            <li>Open your private Worker link, then enter your dashboard access code below. API keys never go in this form.</li>
+          </ol>
+          <p class="small-copy">Read <a href="https://github.com/zlevesque/str-mission-control/blob/main/docs/LIVE-SETUP-OUTLINE.md" target="_blank" rel="noreferrer">the full live-setup guide</a> before connecting a real property.</p>
         </div>
-        <p class="microcopy" id="copy-status"></p>
+        <form class="live-connect-form" id="live-connect-form">
+          <label for="worker-url">Your private Worker address <span>(a web link, not a secret)</span><input id="worker-url" type="url" placeholder="https://your-mission-control.workers.dev" autocomplete="url" /></label>
+          <label for="dashboard-access-token">Dashboard access code <span>(kept only until this browser tab closes)</span><input id="dashboard-access-token" type="password" autocomplete="current-password" placeholder="Your private access code" /></label>
+          <button class="button primary" type="submit">Connect this dashboard</button>
+          <button class="button secondary hidden" type="button" id="disconnect-live">Return to sample data</button>
+          <p class="microcopy" id="live-connect-status">This form never asks for Hospitable or PriceLabs API keys.</p>
+          <div class="pricing-connection hidden" id="pricing-connection">
+            <p class="eyebrow">Optional PriceLabs</p>
+            <p class="microcopy">After you save your PriceLabs API key in Cloudflare, choose your listing here. The key stays hidden.</p>
+            <button class="button secondary" type="button" id="load-pricelabs-listings">Find my PriceLabs listings</button>
+            <label class="hidden" id="pricelabs-listing-label" for="pricelabs-listing">Choose your property<select id="pricelabs-listing"></select></label>
+            <button class="button primary hidden" type="button" id="save-pricelabs-listing">Use this PriceLabs listing</button>
+            <p class="microcopy" id="pricing-connection-status"></p>
+          </div>
+        </form>
       </section>
     </main>
 
-    <footer>Built as a fake-data teaching demo. Never paste keys, guest data, door codes, or Wi-Fi details into a public repository.</footer>
+    <footer>Built as a fake-data teaching template. Never paste keys, guest data, door codes, Wi-Fi details, or real screenshots into a public repository.</footer>
     <script src="config.js"></script>
     <script src="app.js"></script>
     <script src="live-data-adapter.js"></script>

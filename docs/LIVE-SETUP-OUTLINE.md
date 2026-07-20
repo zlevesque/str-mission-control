@@ -1,152 +1,247 @@
-# Live setup — from safe demo to a private real dashboard
+# Connect your live dashboard — slow, safe, and simple
 
-This page explains the **real-data path** in plain English. Read it after you have tried the demo and chosen the cards you want.
+This is the guide for turning the complete sample dashboard into **your own private Mission Control**.
 
-## First, an important honest note
+You are not building a new dashboard. You are not choosing cards. The finished template already includes Today, Week, Upcoming, Calendar, Completed, Resources, reviews, flags, guest prep, the 5-star playbook, and the service-quotes library.
 
-The downloaded dashboard works today as a **safe demo**. It shows pretend stays, tasks, flags, and numbers. Nothing is connected to Hospitable or PriceLabs yet.
+You are only connecting your private accounts behind it.
 
-Live setup is the separate job of connecting the downloaded dashboard to a small **private helper**. We will call that helper the *Worker*. The Worker keeps private information out of the public webpage and out of GitHub.
+## What you will end up with
 
-So there are two different wins:
+```text
+Hospitable sends an update
+            ↓
+Your private Cloudflare Worker receives it
+            ↓
+The same Mission Control template shows the safe parts of it
+            ↓
+You and your approved teammate open one private web address
+```
 
-| What you are doing | How long it should feel like | What you get |
-| --- | --- | --- |
-| Try the demo and choose cards | About 5–10 minutes | Your own version of this exact dashboard design, using pretend data |
-| Connect a real property for the first time | More time and careful setup | A private dashboard that can receive real, protected data |
+The public GitHub project remains safe to share. Your live data, access codes, and provider keys stay in your own Cloudflare account.
 
-If you expected a single button that instantly connects Hospitable, that button does **not** exist yet. We will build the Worker and screenshot guide before calling this an easy one-click live setup.
+## Read this before touching anything
 
-## Before you begin
+- You need one property for this first setup. If you manage several properties, set up one Worker per property until the multi-property version exists.
+- You do **not** put a Hospitable or PriceLabs key into the dashboard, `config.js`, GitHub, or an AI chat.
+- A coding helper may do the boring computer chores. You still do every sign-in, approval, and secret-value entry yourself.
+- Plan for a calm first session, not a rushed five minutes. Once the private connection exists, the template itself is plug-and-play.
 
-Make sure these three things are true:
+## Tiny dictionary
 
-- You have a downloaded copy of this project on your computer. See [Start Here](START-HERE.md) if you do not.
-- You already used **Build my dashboard**, downloaded `config.js`, and replaced the old `config.js` in your downloaded project folder.
-- You are the person allowed to create a Cloudflare account and make a webhook/token in Hospitable—or you have permission from that person.
-
-Do **not** collect or paste any keys yet. You will add them later, directly into Cloudflare's private secret area.
-
-## The live-setup path, one small step at a time
-
-### 1. Start with your customized demo
-
-1. Open your downloaded project folder.
-2. Double-click `index.html`.
-3. Confirm that the business name, property name, and chosen cards look right.
-4. Refresh the page once. It should still be a fake-data demo; that is expected.
-
-At this point, the dashboard should look exactly like the starter. Changing `config.js` changes names and selected existing cards only—it does not redesign the page.
-
-### 2. Enter private setup
-
-1. In the dashboard, click **Build my dashboard**.
-2. Continue through the choices until you reach the final screen.
-3. Click **Copy private setup prompt**.
-4. Open Codex, Claude Code, or your preferred coding AI **with the downloaded project folder open**.
-5. Paste the copied prompt and ask it to set up a private live connection.
-
-The copied prompt is an instruction sheet for the AI. It does **not** send data, create an account, or connect Hospitable by itself.
-
-### 3. Let the AI build the private connection, not a new dashboard
-
-Tell the AI which sources you want to connect—for example, Hospitable first and PriceLabs later. Give it **no keys, passwords, real guest names, door codes, or Wi-Fi details**.
-
-Its work should be limited to these safe places:
-
-| The AI may work here | Why |
+| Word | Means |
 | --- | --- |
-| `config.js` | Your non-secret names, card choices, and private Worker address |
-| `live-data-adapter.js` | The small bridge that lets the existing dashboard display a safe private response |
-| A new `worker/` folder | The private connection code, webhook checks, and shared task state |
+| Dashboard | The pretty Mission Control page you can see and click. |
+| Worker | A tiny private helper on Cloudflare. It receives updates and protects the keys. |
+| Secret | A password-like value. Never put it in a public file or chat. |
+| Webhook | A doorbell. Hospitable rings it when a reservation, message, or review changes. |
+| KV | The Worker’s small locked memory drawer for reservations, checkmarks, and flags. |
 
-It must leave `index.html`, `style.css`, and `app.js` alone. Those three files are the actual STR Mission Control design. Read [Design Lock](DESIGN-LOCK.md) if you want to check its work.
+## Part 1: put the template in a safe place
 
-### 4. Create the Worker in Cloudflare
+1. Download the repository using the green **Code** button and **Download ZIP**. [Start Here](START-HERE.md) shows every click.
+2. Unzip it in your Downloads folder.
+3. Open the new `str-mission-control-main` folder.
+4. Double-click `index.html` and click **Try the full demo**. Make sure you can see the Calendar and Resources tabs.
+5. Keep this folder. It is your starting template.
 
-The AI should walk you through this when the Worker files exist. The eventual screenshot guide will show each button, but the simple job is:
+Do not add real data while the folder is only a downloaded demo. The private Worker comes first.
 
-1. Create or sign in to a Cloudflare account.
-2. Create a Worker for **your private Mission Control**, not for the public repository.
-3. Deploy the Worker code from your private `worker/` folder.
-4. Copy the Worker’s web address. It will look like a web link and is okay to place in `config.js`; the address is not a password.
+## Part 2: create or sign in to Cloudflare
 
-The Worker is like a locked receptionist: Hospitable can give it an update, and your dashboard can ask it for approved information. The public web page never needs to know your provider keys.
+Cloudflare is where your private helper lives. It is not where you design the dashboard.
 
-### 5. Add secrets in Cloudflare—not in this project
+1. Go to [Cloudflare](https://dash.cloudflare.com/sign-up) in a normal browser window.
+2. If you do not have an account, choose **Sign up** and create one. If you already have one, sign in.
+3. Complete any email verification Cloudflare asks for.
+4. When you arrive at the Cloudflare dashboard, stop. You do not need to click around or create random projects yet.
 
-Cloudflare has a private **Secrets** area for the Worker. Add each value there yourself. If a screen asks you to save a secret into a file that will be uploaded to GitHub, stop.
+Cloudflare’s current Worker guide calls this area **Workers & Pages**. Its exact visual layout can change, but the name is what you are looking for. [Cloudflare’s official dashboard guide](https://developers.cloudflare.com/workers/get-started/dashboard/) explains the current starting point.
 
-| Private value | Put it in | Never put it in |
+## Part 3: let a coding helper help without giving it your password
+
+You do not need an AI to design or rebuild anything. The dashboard is already done.
+
+You may use Codex, Claude Code, or another coding helper to run the installation commands in the `worker` folder. Give it this short instruction in your own words:
+
+> Open `worker/README.md` and follow it one step at a time. Do not edit `index.html`, `style.css`, or `app.js`. Stop whenever I need to sign in, approve access, or enter a secret value.
+
+That is the only instruction it needs. It is an installer helper, not a dashboard builder.
+
+### What “giving the helper access” safely looks like
+
+1. Open the downloaded `str-mission-control-main` folder in your coding helper.
+2. Let it open the `worker` folder and install the normal project tools.
+3. It may run `npx wrangler login`.
+4. Your browser opens a Cloudflare sign-in or approval page.
+5. **You** sign in and click the approval button. Do not type your Cloudflare password into the coding chat.
+6. Return to the helper only after the browser says the login worked.
+
+This authorizes Wrangler—the Cloudflare command tool—on **your own computer**. It does not give the helper your password, and it does not require you to paste a Cloudflare API key into a chat.
+
+If a helper asks you to paste a secret into a file, terminal command, GitHub page, or chat, say no and use the next section instead.
+
+## Part 4: make the Worker’s locked memory drawer
+
+The Worker needs a small place to remember reservations, checkmarks, notes, and flags. Cloudflare calls this KV.
+
+Ask the helper to run this inside the `worker` folder:
+
+```text
+npx wrangler kv namespace create MISSION_CONTROL
+```
+
+Cloudflare prints a line with a long **id**. It is an identifier, not a secret.
+
+1. Copy that id.
+2. Open `worker/wrangler.jsonc`.
+3. Find the words `REPLACE_WITH_YOUR_KV_NAMESPACE_ID`.
+4. Replace only those words with the id Cloudflare gave you.
+5. Change the two friendly labels in the same file:
+   - `BUSINESS_NAME`
+   - `PROPERTY_NAME`
+
+Do not add keys or passwords to this file.
+
+## Part 5: deploy your private Worker
+
+Ask the helper to run:
+
+```text
+npm run deploy
+```
+
+This command first makes a tiny private copy of the dashboard files the Worker needs, then deploys it. At the end, Wrangler prints a web address that ends in `workers.dev`. Copy it somewhere private; this is your Mission Control home address.
+
+Open this address in your browser. You should see the exact dashboard template—not a new AI-made design.
+
+Then add `/health` to the end of the address and open it. Example:
+
+```text
+https://your-mission-control.workers.dev/health
+```
+
+You should see a small message that says the private Worker is running. If you do, the hard part is alive.
+
+## Part 6: add your private secrets in Cloudflare
+
+Now you will create two long, random strings. A password manager is the easiest safe place to generate and keep them. Make two different strings; do not reuse your email or Airbnb password.
+
+Give them simple private labels:
+
+| Cloudflare secret name | What you paste as its value | What it does |
 | --- | --- | --- |
-| Hospitable personal-access token | Cloudflare Worker secret | A prompt, `config.js`, GitHub, or browser code |
-| Hospitable webhook signing secret | Cloudflare Worker secret | A screenshot, email, or public repository |
-| PriceLabs Customer API key, if you choose PriceLabs | Cloudflare Worker secret | The static dashboard files or a public prompt |
-| Dashboard login/session secret | Cloudflare Worker secret | `index.html`, a shared note, or GitHub |
+| `DASHBOARD_ACCESS_TOKEN` | Your first random string | Lets your approved team open the private dashboard |
+| `HOSPITABLE_WEBHOOK_SECRET` | Your second random string | Protects the special web address Hospitable uses to ring the doorbell |
 
-You can tell the AI the **name** of a secret, such as `HOSPITABLE_TOKEN`. Do not tell it the secret’s value. You enter the value directly in Cloudflare.
+To add each one in Cloudflare:
 
-### 6. Connect Hospitable’s webhook
+1. In Cloudflare, choose **Workers & Pages**.
+2. Select your Mission Control Worker.
+3. Choose **Settings**.
+4. Find **Variables and Secrets** and click **Add**.
+5. Choose the type **Secret**—not plain text.
+6. Type the secret name exactly as it appears in the table above.
+7. Paste that secret’s value from your password manager.
+8. Click **Deploy** or save the change, as Cloudflare asks.
+9. Repeat for the second secret.
 
-A webhook is simply an automatic doorbell: Hospitable rings it when something changes.
+Cloudflare hides a saved secret value afterward. That is good. Its official instructions confirm this exact Settings → Variables and Secrets → Add flow and recommend secrets for API keys and tokens. [Read the official Cloudflare secrets guide](https://developers.cloudflare.com/workers/configuration/secrets/).
 
-1. In Hospitable, find its **Webhooks** settings. The exact menu label can move as Hospitable updates its app, so the finished screenshot guide will verify the current clicks.
-2. Create a webhook named something obvious, such as `Mission Control`.
-3. Paste in your private Worker web address.
-4. Select only the events the Worker was built to handle—normally reservation changes, guest messages, and review-related events. Do not select every checkbox just because it is available.
-5. If Hospitable gives you a signing secret, copy it directly into the matching Cloudflare Worker secret. Do not save it in the project folder.
+## Part 7: connect Hospitable
 
-### 7. Test with pretend information first
+Hospitable will send reservation updates to your Worker. First make one private webhook address:
 
-Before allowing real guest information through:
+```text
+YOUR-WORKER-ADDRESS/webhooks/hospitable?key=YOUR_HOSPITABLE_WEBHOOK_SECRET
+```
 
-1. Have the AI/Worker send one clearly marked fake test reservation.
-2. Open your private dashboard.
-3. Confirm the test appears in the correct card or calendar area.
-4. Confirm no test value appears in the public GitHub repository.
-5. Delete the test after it works.
+Example shape only—do not copy this as a real address:
 
-Only after that test passes should the Worker request or accept real reservation information.
+```text
+https://your-mission-control.workers.dev/webhooks/hospitable?key=your-private-random-string
+```
 
-### 8. Add the first real data carefully
+That entire address behaves like a password because it contains your secret. Keep it out of screenshots, notes shared with others, GitHub, and AI chats.
 
-1. Confirm the selected Hospitable property is the correct one.
-2. Pull only the upcoming stays needed for the dashboard.
-3. Open the private dashboard in a normal browser window.
-4. Check the arrival dates, guest task counts, flags, and occupancy calculation against Hospitable.
-5. Give access only to people who should see guest operations.
+Then, inside Hospitable:
 
-If a number looks wrong, pause and fix the source mapping before relying on it.
+1. Sign in to [Hospitable](https://my.hospitable.com).
+2. Go to **Apps**.
+3. Under **Tools**, click **Webhooks**.
+4. Make sure the first **Webhooks** tab is selected.
+5. Click **+ Add new**.
+6. Name it `Mission Control`.
+7. Paste your private webhook address into the URL box.
+8. Select **Reservations** first. This is the important one for Calendar, arrivals, tasks, and occupancy.
+9. You may also select **Reviews** if you want review-follow-up flags. Add **Messages** later only when you are ready to decide how message-created flags should work.
+10. Click **Save**.
+11. Click **Test** only after you are sure the URL points to your own private Worker. Hospitable’s test sends the latest selected item, which can be real guest information—never use a third-party test website for this.
 
-## Which tool supplies which number?
+Hospitable documents these current clicks as Apps → Webhooks → +Add new, then selecting Properties, Reservations, Messages, and/or Reviews. It sends a JSON POST request and expects a `200 OK`; otherwise it retries. [Hospitable’s official webhook guide](https://help.hospitable.com/en/articles/10008203-webhooks-for-reservations-properties-messages-and-reviews) is the source of truth if its menu changes.
 
-Different tools answer different questions. Keeping them separate prevents misleading reporting.
+### Bring in the first accepted reservations
 
-| What the dashboard shows | Correct source | In simple words |
-| --- | --- | --- |
-| Actual occupancy at your property | Hospitable reservation calendar | Your booked nights divided by available nights |
-| Arrivals, preparation tasks, guest messages, and reviews | Hospitable reservation data + webhooks | What is happening at your property |
-| Dynamic prices and minimum-stay guidance | PriceLabs Customer API | The pricing guidance for your listings |
-| Wider market occupancy, RevPAR, or demand trends | PriceLabs market tools / MCP | The market around you, not your own booked calendar |
+After the test works:
 
-PriceLabs’ [Customer API](https://developers.pricelabs.co/customer-api/api-reference/overview) is the right path for a private custom dashboard. PriceLabs’ [MCP connector](https://developers.pricelabs.co/mcp/overview) is a separate AI-assistant tool. It is optional; the dashboard does not need MCP in order to work.
+1. Stay in Hospitable’s Webhooks area.
+2. Open the three-dot menu for the webhook.
+3. Choose **Send historic webhooks**.
+4. Wait a minute, then refresh your private dashboard.
 
-## Final safety check
+Hospitable says this historic send includes reservations whose last status is Accepted. It is a useful first fill, but it is not a rewind button for every past webhook event.
 
-Before treating the setup as complete:
+## Part 8: open your private dashboard
 
-1. Run `node scripts/check-design-lock.mjs` from the project folder. It should say the design lock passed.
-2. Open the public GitHub repository and confirm it contains no real guest data, keys, door codes, Wi-Fi details, phone numbers, or real screenshots.
-3. Open your dashboard from its private address and confirm that it requires the protection you chose.
-4. Change one harmless task and make sure the two approved team members see the same result.
+1. Open your `workers.dev` Mission Control address—not the old `index.html` file in Downloads.
+2. Click **Connect my live data**.
+3. Paste the same private Worker address.
+4. Paste the value you saved as `DASHBOARD_ACCESS_TOKEN`.
+5. Click **Connect this dashboard**.
+6. Your live data should replace the sample stays.
 
-## What we still need to build for this to become truly beginner-friendly
+The dashboard access code stays only until that browser tab closes. That is intentional. You will enter it again in a new tab or on a new approved device.
 
-This page is the route map. Before calling live setup finished, the project still needs:
+## Part 9: add PriceLabs only if you want pricing context
 
-- A ready-to-deploy private Worker starter.
-- A verified, current Hospitable webhook walkthrough.
-- A verified Cloudflare walkthrough with screenshots and fake example values.
-- A safe test button and an easy “something went wrong” troubleshooting section.
+Hospitable supplies **your actual booked reservations**. PriceLabs supplies optional **pricing context**. They are different jobs.
 
-Until those pieces ship, the public project remains a safe demo and design template—not an instant live-data product.
+| Question | Right source |
+| --- | --- |
+| How full is my property over the next 30 days? | Hospitable reservations |
+| What rate is PriceLabs recommending? | PriceLabs Customer API |
+| What is happening across my wider market? | PriceLabs market data / optional MCP analysis |
+
+To turn on the Customer API in PriceLabs:
+
+1. Sign in to PriceLabs.
+2. Go to **Account Settings**.
+3. Click **API Details**.
+4. Click **Enable**.
+5. Choose **I Need API Access**.
+6. Type `API` in the confirmation box and click **Continue**.
+7. Copy the API key that appears.
+8. Go back to Cloudflare’s **Variables and Secrets** page for your Worker.
+9. Add a new **Secret** named `PRICELABS_API_KEY` and paste the key there.
+10. Deploy the secret change.
+
+PriceLabs’ Customer API guide gives those exact current steps and says the key is sent as an `X-API-Key` header by the private server. [Enable the Customer API](https://developers.pricelabs.co/customer-api/api-reference/enable-the-api).
+
+Now go back to your private Mission Control page. In **Connect live data**, click **Find my PriceLabs listings**. You will see only the listings available to the private PriceLabs key already saved in Cloudflare. Pick the property you want, then click **Use this PriceLabs listing**. You never need to find, copy, or paste a listing ID or PMS name yourself.
+
+The Worker uses PriceLabs’ documented `listing_prices` endpoint for the next 30 days, then keeps only a small summary for the dashboard. [PriceLabs listing-price reference](https://developers.pricelabs.co/customer-api/api-reference/customer-api/prices/for-listings)
+
+### What about PriceLabs MCP?
+
+MCP is optional and separate. It connects PriceLabs to an AI assistant for analysis or pricing actions; it is not required to run this dashboard. PriceLabs currently documents a Claude connection flow with its own authorization screen. Use the **Customer API** for the dashboard and MCP only for deliberate AI-assisted work. [PriceLabs MCP overview](https://developers.pricelabs.co/home/overview)
+
+## Final check: five green lights
+
+- [ ] Your private `workers.dev` address opens the complete template.
+- [ ] Adding `/health` shows the Worker is running.
+- [ ] You added the two required values as Cloudflare **Secrets**, not code or text variables.
+- [ ] Hospitable’s Test button returns successfully and a test reservation appears after you connect the dashboard.
+- [ ] If you chose PriceLabs, you picked its listing from your private dashboard without putting the API key anywhere else.
+- [ ] The public GitHub repository still contains only fictional names, fictional vendors, and no key values.
+
+If one light is not green, stop there. The sample dashboard still works perfectly while you fix one connection at a time.

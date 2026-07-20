@@ -1,46 +1,55 @@
-# AI Tools and PriceLabs — choose the safe path
+# PriceLabs, AI tools, and this dashboard
 
-You can use this template with **Claude, ChatGPT, Codex, or another AI builder**. The fake-data demo and the **Copy my builder prompt** button do not require a PriceLabs connection at all.
+There are two different PriceLabs connections. They do different jobs.
 
-There are two different jobs here:
+| What you want to do | Use this | Does the dashboard need it? |
+| --- | --- | --- |
+| Show dynamic prices in Mission Control | PriceLabs **Customer API** through the private Cloudflare Worker | Optional |
+| Ask an AI questions about pricing or market conditions | PriceLabs **AI Connector (MCP)** | No |
 
-1. **Building your private dashboard.** Any AI builder can help with this. Give it the copied builder prompt and your downloaded settings file.
-2. **Getting live PriceLabs information into that dashboard.** This needs a private connection. It is not something to paste into a public website or an AI chat.
+## The simple recommendation
 
-## Pick the row that matches you
+For a live STR Mission Control dashboard, use the **Customer API**. The private Worker keeps the API key hidden and sends only a small pricing summary to the page.
 
-| If you are using… | Use this for building the dashboard | Use this for live PriceLabs dashboard data | What to avoid |
-| --- | --- | --- | --- |
-| Claude | Paste in the builder prompt and settings. | Use the **PriceLabs Customer API** through a private Cloudflare Worker. | Do not put the Customer API key in the webpage. |
-| Claude and you want to talk to PriceLabs inside Claude | Same builder prompt and settings. | The PriceLabs **MCP connector** can help with AI-assisted pricing analysis and actions. It is a separate Claude connection, not the dashboard's data pipe. | Do not treat MCP as a replacement for the private Customer API. |
-| ChatGPT, Codex, or another AI tool | Paste in the same builder prompt and settings. | Use the **PriceLabs Customer API** through a private Cloudflare Worker. | Do not copy Claude-only MCP steps or paste a key into the AI chat. |
+Use MCP only if you personally want an AI assistant to help analyze PriceLabs data or make deliberate changes. MCP is not the pipe that powers the dashboard.
 
-## A simple rule
+PriceLabs describes the Customer API as the fit for custom dashboards and automated pricing workflows, while its AI Connector is for assistants such as Claude. [PriceLabs developer overview](https://developers.pricelabs.co/home/overview)
 
-**MCP helps an AI talk with PriceLabs. The Customer API helps your private dashboard show PriceLabs data.** They are different tools for different jobs.
+## Customer API: the dashboard path
 
-PriceLabs currently documents its MCP connector as beta and starts with Claude. Its documentation says support for more AI clients is on the way. So, if you use ChatGPT, Codex, or another tool and do not see an official PriceLabs connector, that is expected. Build the dashboard with your preferred tool, then ask it to connect the **Customer API** behind your private Cloudflare Worker.
+Follow the PriceLabs part of [Live Setup](LIVE-SETUP-OUTLINE.md). In short:
 
-## Copy this sentence into your AI builder
+1. In PriceLabs, open **Account Settings → API Details**.
+2. Click **Enable**.
+3. Choose **I Need API Access**.
+4. Type `API` and continue.
+5. Copy the key.
+6. Add it directly in Cloudflare as a **Secret** named `PRICELABS_API_KEY`.
+7. Deploy the secret change.
+8. Open your private dashboard, click **Find my PriceLabs listings**, select the property, then click **Use this PriceLabs listing**.
 
-> I am using the PriceLabs Customer API for live dashboard data. Put the API key only in my private Cloudflare Worker secret store. Do not put it in browser code, a public repository, or this chat. Label actual property occupancy as Hospitable booking occupancy, and label PriceLabs market occupancy as market context.
+The key belongs only in Cloudflare. It never goes into browser code, `config.js`, GitHub, a screenshot, or an AI chat.
 
-## If you use Claude MCP
+PriceLabs says Customer API calls use the `X-API-Key` request header and its listing-price endpoint returns price information for the listings you ask for. [Enable the Customer API](https://developers.pricelabs.co/customer-api/api-reference/enable-the-api) · [Get listing prices](https://developers.pricelabs.co/customer-api/api-reference/customer-api/prices/for-listings)
 
-Follow PriceLabs' own **Connect to Claude** guide. It uses a PriceLabs-provided connection URL, a client ID, and a sign-in/authorization step. Choose the least permission needed. If you only want answers and analysis, use read-only permission rather than write permission.
+## MCP: optional AI assistance
 
-This is optional. You can finish the demo, choose your dashboard, and build a private version without MCP.
+PriceLabs’ MCP/AI Connector can be useful for questions such as:
 
-## Never do these things
+- “What has changed in my market this month?”
+- “Which dates have the weakest booking pace?”
+- “Explain this listing’s price recommendation.”
 
-- Never paste an API key, MCP client ID, secret, token, or password into this public repository.
-- Never add a key directly to `app.js`, `config.example.js`, or browser developer tools.
-- Never paste real guest details into an AI prompt just to test a dashboard.
-- Never assume an unofficial connector is safe because it uses the letters “MCP.” Wait for the provider's official instructions.
+Its current official setup is a separate authorization flow inside Claude. You find an MCP URL and Client ID in **Account Settings → AI Connector (MCP)**, then authorize PriceLabs from Claude. It can have read and/or write permissions, so choose the smallest permission level that matches the task. [PriceLabs’ Claude MCP guide](https://developers.pricelabs.co/mcp/connect-to-claude)
 
-## Official PriceLabs reading
+If you use ChatGPT, Codex, or a different AI product and do not see an official PriceLabs connector, do not work around that by pasting an API key into a chat. The dashboard still works through the Customer API in your private Worker.
 
-- [PriceLabs developer overview](https://developers.pricelabs.co/home/overview)
-- [PriceLabs Customer API overview](https://developers.pricelabs.co/customer-api/api-reference/overview)
-- [PriceLabs MCP overview](https://developers.pricelabs.co/mcp/overview)
-- [PriceLabs: Connect to Claude](https://developers.pricelabs.co/mcp/connect-to-claude)
+## Good labels prevent bad decisions
+
+| Label in Mission Control | What it really means |
+| --- | --- |
+| Booked occupancy | Your property’s booked nights divided by available nights, based on Hospitable reservations |
+| PriceLabs rate | Dynamic pricing guidance from PriceLabs for your listing |
+| Market context | A wider-market signal, not the occupancy of your own property |
+
+Do not call a market number “my occupancy.” They answer different questions.

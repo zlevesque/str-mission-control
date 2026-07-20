@@ -1,10 +1,25 @@
 const defaultConfig = window.STR_MISSION_CONTROL_CONFIG || {};
 
+const checklist = [
+  "Guest needs confirmed",
+  "House rules confirmed",
+  "Pet details confirmed",
+  "Personal touch planned",
+  "Pre-arrival message scheduled",
+  "Arrival prep complete",
+];
+
+const primingSteps = ["Check-up · day 1", "Pre-checkout", "Post-checkout", "Friends & family offer"];
+const reviewSteps = ["Guest review", "Host review", "Response"];
+
 const demoStays = [
   {
+    id: "demo-jordan",
     guest: "Jordan Blake",
     channel: "Airbnb",
-    dates: "Today → Sun",
+    checkIn: "2026-07-19",
+    checkOut: "2026-07-22",
+    dates: "Jul 19 → Jul 22",
     nights: "3 nights",
     party: "4 adults · 2 pets",
     occasion: "Family reunion",
@@ -16,9 +31,12 @@ const demoStays = [
     reviews: [false, false, false],
   },
   {
+    id: "demo-priya",
     guest: "Priya Raman",
     channel: "Airbnb",
-    dates: "Tomorrow → Mon",
+    checkIn: "2026-07-16",
+    checkOut: "2026-07-19",
+    dates: "Jul 16 → Jul 19",
     nights: "3 nights",
     party: "3 adults · 1 pet",
     occasion: "Graduation weekend",
@@ -30,9 +48,12 @@ const demoStays = [
     reviews: [false, false, false],
   },
   {
+    id: "demo-sam",
     guest: "Sam Okafor",
     channel: "Airbnb",
-    dates: "Fri → Tue",
+    checkIn: "2026-07-20",
+    checkOut: "2026-07-24",
+    dates: "Jul 20 → Jul 24",
     nights: "4 nights",
     party: "2 adults · 1 pet",
     occasion: "Birthday trip",
@@ -43,24 +64,137 @@ const demoStays = [
     priming: [true, false, false, false],
     reviews: [false, false, false],
   },
+  {
+    id: "demo-marco",
+    guest: "Marco Ellis",
+    channel: "Airbnb",
+    checkIn: "2026-07-10",
+    checkOut: "2026-07-12",
+    dates: "Jul 10 → Jul 12",
+    nights: "2 nights",
+    party: "2 adults",
+    occasion: "Quiet weekend away",
+    mentioned: ["quiet", "first visit"],
+    prepItems: "Place the extra blanket in the bedroom closet.",
+    personalTouches: "Leave the calm morning-walk recommendation.",
+    done: [true, true, true, true, true, false],
+    priming: [true, true, true, false],
+    reviews: [true, false, false],
+  },
 ];
 
-const primingSteps = ["Check-up · day 1", "Pre-checkout", "Post-checkout", "Friends & family offer"];
-const reviewSteps = ["Guest review", "Host review", "Response"];
+const demoFlags = [
+  {
+    id: "demo-hot-tub",
+    kind: "alert",
+    label: "Guest report · sample",
+    title: "Guest report: hot tub is cold",
+    detail: "A private dashboard can turn a real guest issue into a protected flag. This sample stays in your browser.",
+  },
+  {
+    id: "demo-supplies",
+    kind: "warm",
+    label: "Supply reorder · sample",
+    title: "Restock paper towels + coffee pods",
+    detail: "This is a made-up supply reminder. Refresh the page to return to the original sample.",
+  },
+];
+
+const resourceCards = [
+  {
+    title: "1 · Check-up",
+    timing: "The day after check-in · stays longer than one night",
+    copy: "Good morning, {{guest_first_name}}!\n\nI hope you have settled in well. Please let us know if there is anything you need so we can help make this a wonderful stay!",
+    note: "A friendly early check-in gives guests an easy chance to ask for help before a small issue grows.",
+  },
+  {
+    title: "2 · Pre-checkout",
+    timing: "The evening before checkout · stays longer than one night",
+    copy: "Hi {{guest_first_name}}!\n\nWe hope you have had a great stay. Before tomorrow's checkout, please gather used linens and towels, start any dishes you can, turn off lights, and let us know if you need anything before you travel.",
+    note: "Keep this note kind and short. It reminds guests of the basics without sounding like a rulebook.",
+  },
+  {
+    title: "3 · Post-checkout",
+    timing: "A few hours after checkout",
+    copy: "Hi {{guest_first_name}}!\n\nThank you for leaving the place in good shape. If there is anything we can improve, please let us know. We appreciate you and hope to host you again!",
+    note: "This is a gentle moment to invite private feedback and start the review loop.",
+  },
+  {
+    title: "4 · Celebration surprise",
+    timing: "Only when a celebration is confirmed",
+    copy: "Hi {{guest_first_name}}! We heard you are celebrating. We left a small welcome surprise for your group. We hope it makes the occasion even sweeter!",
+    note: "Edit this to match the personal touch you actually provide. Never promise a gift you have not placed.",
+  },
+  {
+    title: "5 · Friends & family",
+    timing: "After a positive review, during a slower season",
+    copy: "Hi {{guest_first_name}}! Thank you again for staying with us. If you or a friend returns in the future, please reach out directly and we will share the best available return-guest option.",
+    note: "Use only after a positive stay. Make sure any offer follows your platform and local rules.",
+  },
+];
+
+const vendorQuotes = [
+  ["Pool care", "Clearwater Pool Co.", "Weekly cleaning", "$280.00", "Monthly", "Chosen"],
+  ["Lawncare", "Green Path Yard", "Mow + trim", "$160.00", "Seasonal", "Quoted"],
+  ["Handyman", "Home Fix Team", "General repairs", "$90/hr", "As needed", "Chosen"],
+  ["Sauna / spa", "Warm Stone Service", "Quarterly check", "$150.00", "Quarterly", "Quoted"],
+  ["Pest control", "Shield Pest", "Seasonal treatment", "$125.00", "Quarterly", "Chosen"],
+  ["Cleaning", "Ready Turnovers", "STR turnover clean", "$200.00", "Per stay", "Chosen"],
+];
+
+const demoViewCopy = {
+  today: "Sample data: nothing here belongs to a real guest or property.",
+  week: "Sample data: Week lets you see the same complete guest workflow ahead of time.",
+  upcoming: "Sample data: Upcoming shows the next stays in the same full dashboard template.",
+  calendar: "Sample data: Calendar is a real calendar view. Private reservations will replace these sample bars after connection.",
+  completed: "Sample data: completed stays appear only after every main checklist item is checked.",
+  resources: "Sample data: copy a playbook message or explore the fictional service-quote library below.",
+};
+
+const state = {
+  config: {
+    businessName: defaultConfig.businessName || "Maple Stay Co.",
+    propertyName: defaultConfig.propertyName || "The Maple House",
+    timezone: defaultConfig.timezone || "America/New_York",
+  },
+  stays: freshDemoStays(),
+  flags: freshDemoFlags(),
+  activeView: "today",
+  calendarDate: new Date(Date.UTC(2026, 6, 1)),
+  live: false,
+  metrics: {
+    occupancy: 67,
+    rate: "$247",
+    market: "64%",
+    rateCopy: "sample recommended rate",
+    marketCopy: "sample market context",
+  },
+  status: "",
+};
+
+const $ = (selector) => document.querySelector(selector);
 
 function freshDemoStays() {
   return demoStays.map((stay) => ({
     ...stay,
+    mentioned: [...stay.mentioned],
     done: [...stay.done],
     priming: [...stay.priming],
     reviews: [...stay.reviews],
   }));
 }
 
+function freshDemoFlags() {
+  return demoFlags.map((flag) => ({ ...flag, resolved: false }));
+}
+
 function normaliseStay(stay) {
   return {
-    guest: stay.guest || "Demo guest",
+    id: stay.id || stay.reservationId || `private-${stay.guest || Date.now()}`,
+    guest: stay.guest || "Private guest",
     channel: stay.channel || "Stay",
+    checkIn: stay.checkIn || "",
+    checkOut: stay.checkOut || "",
     dates: stay.dates || "Dates to be confirmed",
     nights: stay.nights || "0 nights",
     party: stay.party || "Guest details to be confirmed",
@@ -68,73 +202,10 @@ function normaliseStay(stay) {
     mentioned: Array.isArray(stay.mentioned) ? stay.mentioned : [],
     prepItems: stay.prepItems || "",
     personalTouches: stay.personalTouches || "",
-    done: Array.isArray(stay.done) ? stay.done : [],
-    priming: Array.isArray(stay.priming) ? stay.priming : [],
-    reviews: Array.isArray(stay.reviews) ? stay.reviews : [],
+    done: checklist.map((_, index) => Boolean(stay.done?.[index])),
+    priming: primingSteps.map((_, index) => Boolean(stay.priming?.[index])),
+    reviews: reviewSteps.map((_, index) => Boolean(stay.reviews?.[index])),
   };
-}
-
-const demoFlags = [
-  {
-    id: "hot-tub",
-    kind: "alert",
-    label: "Guest report · auto-detected demo",
-    title: "Guest report: hot tub is cold",
-    detail: "This shows the kind of flag a private dashboard could create after a guest mentions an issue.",
-  },
-  {
-    id: "supplies",
-    kind: "warm",
-    label: "Supply reorder · manual demo",
-    title: "Restock paper towels + coffee pods",
-    detail: "This is a made-up manual supply flag. It stays in this browser until you resolve or refresh it.",
-  },
-];
-
-const demoViewCopy = {
-  today: "Demo view: Today. Sync and Refresh use pretend data only.",
-  week: "Demo view: Week. In a real dashboard, this groups arrivals, tasks, and reviews by week.",
-  upcoming: "Demo view: Upcoming. In a real dashboard, this shows the next arrivals from Hospitable.",
-  calendar: "Demo view: Calendar. The real calendar is built from private reservation data.",
-  completed: "Demo view: Completed. Only fully finished pretend checklists appear below.",
-  resources: "Demo view: Resources. A real dashboard can link your private house manual, vendor list, and team playbooks.",
-};
-
-const state = {
-  config: {
-    businessName: defaultConfig.businessName || "Maple Stay Co.",
-    propertyName: defaultConfig.propertyName || "The Maple House",
-    modules: {
-      guestOps: true,
-      occupancy: true,
-      reviews: true,
-      maintenance: true,
-      revenue: true,
-      ...defaultConfig.modules,
-    },
-    checklist: defaultConfig.checklist || [
-      "Guest needs confirmed",
-      "House rules confirmed",
-      "Pet details confirmed",
-      "Personal touch planned",
-      "Pre-arrival message scheduled",
-      "Arrival prep complete",
-    ],
-  },
-  stays: freshDemoStays(),
-  flags: demoFlags.map((flag) => ({ ...flag, resolved: false })),
-  activeView: "today",
-};
-
-const $ = (selector) => document.querySelector(selector);
-
-function show(selector) {
-  $(selector).classList.remove("hidden");
-  $(selector).scrollIntoView({ behavior: "smooth", block: "start" });
-}
-
-function hide(selector) {
-  $(selector).classList.add("hidden");
 }
 
 function esc(value) {
@@ -143,27 +214,26 @@ function esc(value) {
   }[character]));
 }
 
-function syncConfigFromForm() {
-  state.config.businessName = $("#business-name").value.trim() || "My Stay Company";
-  state.config.propertyName = $("#property-name").value.trim() || "My First Property";
-  document.querySelectorAll("[data-module]").forEach((input) => {
-    state.config.modules[input.dataset.module] = input.checked;
-  });
+function formatMonth(date) {
+  return new Intl.DateTimeFormat("en-US", { month: "long", year: "numeric", timeZone: "UTC" }).format(date);
 }
 
-function applyModules() {
-  const map = {
-    guestOps: "#guest-ops-module",
-    occupancy: "#occupancy-module",
-    reviews: "#reviews-module",
-    maintenance: ["#outstanding-module", "#maintenance-module"],
-    revenue: "#revenue-module",
-  };
-  Object.entries(map).forEach(([key, selectors]) => {
-    (Array.isArray(selectors) ? selectors : [selectors]).forEach((selector) => {
-      $(selector).classList.toggle("hidden", !state.config.modules[key]);
-    });
-  });
+function dateFromIso(value) {
+  return new Date(`${value}T00:00:00Z`);
+}
+
+function differenceInDays(from, to) {
+  return Math.round((to.getTime() - from.getTime()) / 86400000);
+}
+
+function setStatus(message) {
+  state.status = message;
+  $("#demo-view-status").textContent = message;
+}
+
+function emitMutation(detail) {
+  if (!state.live) return;
+  window.dispatchEvent(new CustomEvent("str-mission-control:mutation", { detail }));
 }
 
 function renderFlags() {
@@ -178,6 +248,28 @@ function renderFlags() {
   $("#no-flags").classList.toggle("hidden", openFlags.length !== 0);
 }
 
+function outstandingItems() {
+  return state.stays
+    .map((stay) => {
+      const remaining = [];
+      checklist.forEach((label, index) => { if (!stay.done[index]) remaining.push(label); });
+      if (!stay.priming.every(Boolean)) remaining.push("5-star priming");
+      if (!stay.reviews.every(Boolean)) remaining.push("review follow-through");
+      return { stay, remaining };
+    })
+    .filter(({ remaining }) => remaining.length)
+    .sort((a, b) => b.remaining.length - a.remaining.length)
+    .slice(0, 6);
+}
+
+function renderOutstanding() {
+  const items = outstandingItems();
+  $("#outstanding-count").textContent = state.live ? `${items.length} stays` : "Sample";
+  $("#outstanding-list").innerHTML = items.map(({ stay, remaining }) => `
+    <li><div><strong>${esc(stay.guest)}</strong><p>${esc(remaining.slice(0, 2).join(" · "))}${remaining.length > 2 ? " + more" : ""}</p></div><span class="count">${remaining.length} left</span></li>`).join("")
+    || "<li><div><strong>All clear</strong><p>No unfinished workflow items.</p></div></li>";
+}
+
 function renderWorkflowSteps(steps, completedSteps, workflow, stayIndex) {
   return steps.map((label, stepIndex) => {
     const complete = completedSteps[stepIndex];
@@ -186,174 +278,282 @@ function renderWorkflowSteps(steps, completedSteps, workflow, stayIndex) {
   }).join("");
 }
 
-function renderDashboard() {
-  $("#dashboard-business").textContent = state.config.businessName;
-  $("#dashboard-title").textContent = `${state.config.propertyName} · Mission Control`;
-  $("#stay-count").textContent = `${state.stays.length} stays`;
-
+function renderGuestOps() {
+  const viewLabels = { today: "Today", week: "This week", upcoming: "Upcoming", completed: "Completed" };
   const visibleStays = state.activeView === "completed"
     ? state.stays.filter((stay) => stay.done.every(Boolean))
     : state.stays;
+  return `
+    <div class="section-heading">
+      <div><p class="eyebrow">${esc(viewLabels[state.activeView] || "Today")}</p><h3>Guest ops</h3></div>
+      <span class="count">${visibleStays.length} stays</span>
+    </div>
+    <div class="stay-list">
+      ${visibleStays.map((stay) => renderStay(stay, state.stays.indexOf(stay))).join("") || "<p class=\"small-copy\">No sample checklists are complete yet. Try checking every box on one stay.</p>"}
+    </div>`;
+}
 
-  $("#stay-list").innerHTML = visibleStays.map((stay) => {
-    const stayIndex = state.stays.indexOf(stay);
-    const complete = stay.done.filter(Boolean).length;
-    const items = state.config.checklist.map((label, itemIndex) => `
-      <button class="task ${stay.done[itemIndex] ? "done" : ""}" data-stay="${stayIndex}" data-task="${itemIndex}">
-        <span>${stay.done[itemIndex] ? "✓" : ""}</span>${esc(label)}
-      </button>`).join("");
-    const mentioned = stay.mentioned.map((tag) => `<span class="mention-tag">${esc(tag)}</span>`).join("");
-    return `<article class="stay-card">
-      <div class="stay-head">
-        <div>
-          <div class="stay-name"><h4>${esc(stay.guest)}</h4><span class="channel-badge">${esc(stay.channel)}</span></div>
-          <p>${esc(stay.party)}</p>
-        </div>
-        <div class="stay-timing"><p>${esc(stay.dates)} · ${esc(stay.nights)}</p><span class="count">${complete}/${state.config.checklist.length} done</span></div>
+function renderStay(stay, stayIndex) {
+  const complete = stay.done.filter(Boolean).length;
+  const items = checklist.map((label, itemIndex) => `
+    <button class="task ${stay.done[itemIndex] ? "done" : ""}" type="button" data-stay="${stayIndex}" data-task="${itemIndex}">
+      <span>${stay.done[itemIndex] ? "✓" : ""}</span>${esc(label)}
+    </button>`).join("");
+  const mentioned = stay.mentioned.map((tag) => `<span class="mention-tag">${esc(tag)}</span>`).join("");
+  return `<article class="stay-card">
+    <div class="stay-head">
+      <div>
+        <div class="stay-name"><h4>${esc(stay.guest)}</h4><span class="channel-badge">${esc(stay.channel)}</span></div>
+        <p>${esc(stay.party)}</p>
       </div>
-      <div class="mentioned-row"><span class="workflow-label">Mentioned:</span><div class="mention-tags">${mentioned}</div></div>
-      <p class="occasion-line">✨ <strong>${esc(stay.occasion)}</strong></p>
-      <div class="task-row">${items}</div>
-      <label class="guest-note"><span>🛏 <strong>Prep items</strong></span><input type="text" data-stay="${stayIndex}" data-note="prepItems" aria-label="Prep items for ${esc(stay.guest)}" value="${esc(stay.prepItems)}" /></label>
-      <label class="guest-note"><span>📝 <strong>Personal touches</strong></span><input type="text" data-stay="${stayIndex}" data-note="personalTouches" aria-label="Personal touches for ${esc(stay.guest)}" value="${esc(stay.personalTouches)}" /></label>
-      <div class="workflow-row"><span class="workflow-label">5★ Priming</span><div class="workflow-steps">${renderWorkflowSteps(primingSteps, stay.priming, "priming", stayIndex)}</div></div>
-      <div class="workflow-row"><span class="workflow-label">Reviews</span><div class="workflow-steps">${renderWorkflowSteps(reviewSteps, stay.reviews, "review", stayIndex)}</div></div>
-    </article>`;
-  }).join("") || "<p class=\"small-copy\">No pretend checklists are complete yet. Try checking every box on one stay.</p>";
-  $("#demo-view-status").textContent = demoViewCopy[state.activeView];
+      <div class="stay-timing"><p>${esc(stay.dates)} · ${esc(stay.nights)}</p><span class="count">${complete}/${checklist.length} done</span></div>
+    </div>
+    <div class="mentioned-row"><span class="workflow-label">Mentioned:</span><div class="mention-tags">${mentioned || "<span class=\"small-copy\">Nothing noted yet</span>"}</div></div>
+    <p class="occasion-line">✨ <strong>${esc(stay.occasion)}</strong></p>
+    <div class="task-row">${items}</div>
+    <label class="guest-note"><span>🛏 <strong>Prep items</strong></span><input type="text" data-stay="${stayIndex}" data-note="prepItems" aria-label="Prep items for ${esc(stay.guest)}" value="${esc(stay.prepItems)}" /></label>
+    <label class="guest-note"><span>📝 <strong>Personal touches</strong></span><input type="text" data-stay="${stayIndex}" data-note="personalTouches" aria-label="Personal touches for ${esc(stay.guest)}" value="${esc(stay.personalTouches)}" /></label>
+    <div class="workflow-row"><span class="workflow-label">5★ Priming</span><div class="workflow-steps">${renderWorkflowSteps(primingSteps, stay.priming, "priming", stayIndex)}</div></div>
+    <div class="workflow-row"><span class="workflow-label">Reviews</span><div class="workflow-steps">${renderWorkflowSteps(reviewSteps, stay.reviews, "review", stayIndex)}</div></div>
+  </article>`;
+}
+
+function calendarSegments(year, month) {
+  const firstOfMonth = new Date(Date.UTC(year, month, 1));
+  const gridStart = new Date(firstOfMonth);
+  gridStart.setUTCDate(1 - firstOfMonth.getUTCDay());
+  const gridEnd = new Date(gridStart);
+  gridEnd.setUTCDate(gridStart.getUTCDate() + 42);
+  const segments = [];
+
+  state.stays.forEach((stay, index) => {
+    if (!stay.checkIn || !stay.checkOut) return;
+    let cursor = dateFromIso(stay.checkIn);
+    const stop = dateFromIso(stay.checkOut);
+    if (cursor < gridStart) cursor = new Date(gridStart);
+    while (cursor < stop && cursor < gridEnd) {
+      const offset = differenceInDays(gridStart, cursor);
+      const week = Math.floor(offset / 7);
+      const endOfWeek = new Date(gridStart);
+      endOfWeek.setUTCDate(gridStart.getUTCDate() + ((week + 1) * 7));
+      const segmentEnd = stop < endOfWeek ? stop : endOfWeek;
+      const span = differenceInDays(cursor, segmentEnd);
+      if (span > 0) segments.push({ stay, index, week, column: cursor.getUTCDay() + 1, span, lane: index % 3 });
+      cursor = new Date(segmentEnd);
+    }
+  });
+  return { firstOfMonth, gridStart, segments };
+}
+
+function renderCalendar() {
+  const year = state.calendarDate.getUTCFullYear();
+  const month = state.calendarDate.getUTCMonth();
+  const { firstOfMonth, gridStart, segments } = calendarSegments(year, month);
+  const days = Array.from({ length: 42 }, (_, index) => {
+    const day = new Date(gridStart);
+    day.setUTCDate(gridStart.getUTCDate() + index);
+    const inside = day.getUTCMonth() === month;
+    const today = day.toISOString().slice(0, 10) === "2026-07-20";
+    return `<div class="calendar-day ${inside ? "" : "outside-month"} ${today ? "calendar-today" : ""}"><span>${day.getUTCDate()}</span></div>`;
+  }).join("");
+  const bars = segments.map(({ stay, index, week, column, span, lane }) => `
+    <button class="calendar-event event-${index % 3}" type="button" style="grid-column:${column} / span ${span};grid-row:${week + 1};margin-top:${30 + (lane * 21)}px" data-calendar-stay="${index}" title="${esc(stay.guest)} · ${esc(stay.dates)}">${esc(stay.guest)}</button>`).join("");
+  return `
+    <div class="calendar-header">
+      <div><p class="eyebrow">Sample schedule</p><h3>${formatMonth(firstOfMonth)}</h3></div>
+      <div class="calendar-nav"><button class="toolbar-button" type="button" data-calendar-shift="-1" aria-label="Previous month">←</button><button class="toolbar-button" type="button" data-calendar-today>Today</button><button class="toolbar-button" type="button" data-calendar-shift="1" aria-label="Next month">→</button></div>
+    </div>
+    <div class="calendar-shell" aria-label="Reservation calendar for ${formatMonth(firstOfMonth)}">
+      <div class="calendar-weekdays"><span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span></div>
+      <div class="calendar-grid-days">${days}</div>
+      <div class="calendar-bars">${bars}</div>
+    </div>
+    <p class="small-copy">In a connected private dashboard, reservation bars come from Hospitable. PriceLabs nightly rates can be added after its optional Customer API is connected.</p>`;
+}
+
+function renderResources() {
+  const cards = resourceCards.map((card, index) => `
+    <article class="resource-card">
+      <div class="resource-heading"><div><h3>${esc(card.title)}</h3><p>${esc(card.timing)}</p></div><button class="text-button copy-resource" type="button" data-copy-resource="${index}">Copy</button></div>
+      <pre>${esc(card.copy)}</pre>
+      <p class="small-copy">${esc(card.note)}</p>
+    </article>`).join("");
+  const rows = vendorQuotes.map((row) => `<tr>${row.map((cell) => `<td>${esc(cell)}</td>`).join("")}</tr>`).join("");
+  return `
+    <section class="resources-view">
+      <div class="section-heading resources-title"><div><p class="eyebrow">5★ Priming playbook</p><h3>Five guest-care messages</h3></div><span class="count">5 messages</span></div>
+      <article class="strategy-card"><p class="eyebrow">The idea</p><p>Use a few kind, well-timed messages across the stay: check in early, make checkout simple, ask for private feedback after departure, and offer a thoughtful reason to return. Make every message sound like you.</p></article>
+      <div class="resource-card-grid">${cards}</div>
+      <div class="service-library-heading"><div><p class="eyebrow">Service quotes library</p><h3>Your vendor options in one place</h3></div><div class="service-library-actions"><input type="search" id="vendor-filter" placeholder="Filter sample vendors…" /><button class="toolbar-button" type="button" data-reset-vendors>Refresh sample list</button></div></div>
+      <div class="vendor-table-wrap"><table class="vendor-table"><thead><tr><th>Category</th><th>Provider</th><th>Sub-service</th><th>Quote amount</th><th>Frequency</th><th>Status</th></tr></thead><tbody id="vendor-table-body">${rows}</tbody></table></div>
+      <p class="small-copy">Every company, price, and status in this table is fictional. A private live version can connect your own secure spreadsheet later.</p>
+    </section>`;
+}
+
+function renderMainView() {
+  const resources = state.activeView === "resources";
+  $("#dashboard-grid").classList.toggle("single-column", resources);
+  $("#side-panel").classList.toggle("hidden", resources);
+  if (resources) $("#main-view").innerHTML = renderResources();
+  else if (state.activeView === "calendar") $("#main-view").innerHTML = renderCalendar();
+  else $("#main-view").innerHTML = renderGuestOps();
+}
+
+function renderMetrics() {
+  const occupancy = Math.max(0, Math.min(100, Number(state.metrics.occupancy) || 0));
+  $("#occupancy-number").textContent = `${Math.round(occupancy)}%`;
+  $("#occupancy-bar").style.width = `${occupancy}%`;
+  $("#occupancy-copy").textContent = state.live
+    ? "Booked nights divided by available nights for the next 30 days."
+    : "Sample number only. A private dashboard calculates this from Hospitable reservations.";
+  $("#rate-number").textContent = state.metrics.rate || "—";
+  $("#market-number").textContent = state.metrics.market || "—";
+  $("#rate-copy").textContent = state.metrics.rateCopy || "PriceLabs connection not added";
+  $("#market-copy").textContent = state.metrics.marketCopy || "market context unavailable";
+}
+
+function renderDashboard() {
+  $("#dashboard-business").textContent = state.config.businessName;
+  $("#dashboard-title").textContent = `${state.config.propertyName} · Mission Control`;
+  $("#data-pill").textContent = state.live ? "● Private live data" : "● Sample data";
+  $("#data-pill").classList.toggle("live-data-pill", state.live);
   document.querySelectorAll("[data-view]").forEach((button) => {
     button.classList.toggle("active", button.dataset.view === state.activeView);
   });
+  renderMainView();
+  renderOutstanding();
   renderFlags();
-  applyModules();
+  renderMetrics();
+  if (!state.status) setStatus(state.live ? "Private live data connected. Sync and Refresh ask only your private Worker." : demoViewCopy[state.activeView]);
 }
 
-function downloadConfig() {
-  syncConfigFromForm();
-  const config = {
-    businessName: state.config.businessName,
-    propertyName: state.config.propertyName,
-    timezone: defaultConfig.timezone || "America/New_York",
-    theme: defaultConfig.theme || "linen",
-    privateApiUrl: "",
-    modules: state.config.modules,
-    checklist: state.config.checklist,
-  };
-  const code = `window.STR_MISSION_CONTROL_CONFIG = ${JSON.stringify(config, null, 2)};\n`;
-  const link = document.createElement("a");
-  link.href = URL.createObjectURL(new Blob([code], { type: "text/javascript" }));
-  link.download = "config.js";
-  link.click();
-  URL.revokeObjectURL(link.href);
+function resetDemo() {
+  state.stays = freshDemoStays();
+  state.flags = freshDemoFlags();
+  state.live = false;
+  state.metrics = { occupancy: 67, rate: "$247", market: "64%", rateCopy: "sample recommended rate", marketCopy: "sample market context" };
+  state.status = "";
+  renderDashboard();
 }
 
-function builderPrompt() {
-  const cards = Object.entries(state.config.modules).filter(([, enabled]) => enabled).map(([name]) => name).join(", ");
-  return `Set up the downloaded STR Mission Control starter as a private dashboard for "${state.config.propertyName}" at ${state.config.businessName}. This is a configuration and private-integration task, NOT a UI-generation task.
-
-Use this configuration:
-- Modules: ${cards}
-- Guest checklist: ${state.config.checklist.join("; ")}
-
-Non-negotiable design lock:
-- Do not redesign, replace, move, or restyle the dashboard.
-- Do not edit index.html, style.css, or app.js. They are the exact STR Mission Control design and core behavior.
-- Keep the guest-card order, typography, warm linen palette, tabs, card spacing, Mentioned tags, Prep items, Personal touches, 5-star Priming, Reviews, Outstanding, and Flags exactly as they are.
-- Only edit config.js, live-data-adapter.js, and files inside a new worker/ folder. Use config.js to show or hide the selected existing cards; do not create substitute cards.
-- Run node scripts/check-design-lock.mjs before handing back the completed dashboard. If it fails, restore the locked file instead of changing the design.
-
-Must include these default operating controls:
-- Six guest-priming tasks: guest needs, house rules, pet details, personal touch, pre-arrival message, and arrival preparation.
-- A richer guest card: a clearly labelled Mentioned tag row, an editable Prep items line, an editable Personal touches line for future reference, a 5-star priming flow (check-up day 1, pre-checkout, post-checkout, friends-and-family offer), and a three-step Reviews flow (guest review, host review, response). In the demo, use only fictional examples and browser-only edits; in production, save this shared work securely on the server.
-- A review workflow for guest-review reminder, host review, and public response.
-- An Outstanding list that shows fake unfinished work with remaining counts.
-- A Flags area with a manual Add action, a fake auto-detected guest issue, a fake manual supply-reorder flag, and Resolve actions. Do not send a real guest message or create a live provider action until the host has privately connected their own account.
-- View tabs: Today, Week, Upcoming, Calendar, Completed, and Resources.
-- Sync and Refresh buttons. In the demo they must clearly use fake data; in production they must call a secure server-side source.
-- Actual property occupancy calculated from Hospitable reservation nights divided by available nights.
-- A PriceLabs section for private dynamic-rate data and market context. Use the PriceLabs Customer API for a deployed dashboard, and use PriceLabs MCP for separately authorized AI-assisted analysis or actions. Never expose either provider's key in browser code.
-
-Start with the existing fake-data demo. Then explain, in child-friendly numbered steps, how to connect a real Hospitable property through a private Cloudflare Worker. Put all Hospitable and PriceLabs keys, webhook secrets, guest contact information, door codes, and Wi-Fi details in the private Worker or its secret store—never config.js, live-data-adapter.js, browser code, or Git. Use shared server-side state for checklist updates and notes.`;
+function filterVendors(value) {
+  const query = value.trim().toLowerCase();
+  const rows = vendorQuotes.filter((row) => row.join(" ").toLowerCase().includes(query));
+  const body = $("#vendor-table-body");
+  if (!body) return;
+  body.innerHTML = rows.map((row) => `<tr>${row.map((cell) => `<td>${esc(cell)}</td>`).join("")}</tr>`).join("")
+    || "<tr><td colspan=\"6\">No sample vendors match that search.</td></tr>";
 }
 
 $("#try-demo").onclick = () => {
-  hide("#builder");
-  show("#dashboard");
-  show("#next-step");
+  $("#dashboard").classList.remove("hidden");
+  $("#live-setup").classList.add("hidden");
+  $("#dashboard").scrollIntoView({ behavior: "smooth", block: "start" });
+  state.status = "";
   renderDashboard();
 };
 
-$("#build-mine").onclick = () => show("#builder");
-
-$("#builder-form").onsubmit = (event) => {
-  event.preventDefault();
-  syncConfigFromForm();
-  renderDashboard();
-  show("#dashboard");
-  show("#next-step");
-};
-
-$("#download-config").onclick = downloadConfig;
-
-$("#edit-choices").onclick = () => show("#builder");
-
-$("#copy-prompt").onclick = async () => {
-  await navigator.clipboard.writeText(builderPrompt());
-  $("#copy-status").textContent = "Copied. Paste it into your preferred AI builder only when you are ready to add a private data connection.";
-};
-
-$("#stay-list").onclick = (event) => {
-  const button = event.target.closest("[data-task]");
-  if (!button) return;
-  const stay = state.stays[Number(button.dataset.stay)];
-  const task = Number(button.dataset.task);
-  stay.done[task] = !stay.done[task];
+$("#open-live-setup").onclick = () => {
+  $("#dashboard").classList.remove("hidden");
+  $("#live-setup").classList.remove("hidden");
+  $("#live-setup").scrollIntoView({ behavior: "smooth", block: "start" });
   renderDashboard();
 };
-
-$("#stay-list").addEventListener("click", (event) => {
-  const primingButton = event.target.closest("[data-priming]");
-  if (primingButton) {
-    const stay = state.stays[Number(primingButton.dataset.stay)];
-    const step = Number(primingButton.dataset.priming);
-    stay.priming[step] = !stay.priming[step];
-    renderDashboard();
-    return;
-  }
-  const reviewButton = event.target.closest("[data-review]");
-  if (reviewButton) {
-    const stay = state.stays[Number(reviewButton.dataset.stay)];
-    const step = Number(reviewButton.dataset.review);
-    stay.reviews[step] = !stay.reviews[step];
-    renderDashboard();
-  }
-});
-
-$("#stay-list").addEventListener("input", (event) => {
-  const note = event.target.closest("[data-note]");
-  if (!note) return;
-  const stay = state.stays[Number(note.dataset.stay)];
-  stay[note.dataset.note] = note.value;
-  $("#demo-view-status").textContent = "Pretend note saved in this browser only. A private dashboard would save it for the whole team.";
-});
 
 document.querySelectorAll("[data-view]").forEach((button) => {
   button.onclick = () => {
     state.activeView = button.dataset.view;
+    state.status = "";
     renderDashboard();
   };
 });
 
+$("#main-view").addEventListener("click", async (event) => {
+  const task = event.target.closest("[data-task]");
+  if (task) {
+    const stay = state.stays[Number(task.dataset.stay)];
+    const index = Number(task.dataset.task);
+    stay.done[index] = !stay.done[index];
+    state.status = "";
+    renderDashboard();
+    emitMutation({ type: "workflow", stayId: stay.id, field: "done", index, value: stay.done[index] });
+    return;
+  }
+  const priming = event.target.closest("[data-priming]");
+  if (priming) {
+    const stay = state.stays[Number(priming.dataset.stay)];
+    const index = Number(priming.dataset.priming);
+    stay.priming[index] = !stay.priming[index];
+    state.status = "";
+    renderDashboard();
+    emitMutation({ type: "workflow", stayId: stay.id, field: "priming", index, value: stay.priming[index] });
+    return;
+  }
+  const review = event.target.closest("[data-review]");
+  if (review) {
+    const stay = state.stays[Number(review.dataset.stay)];
+    const index = Number(review.dataset.review);
+    stay.reviews[index] = !stay.reviews[index];
+    state.status = "";
+    renderDashboard();
+    emitMutation({ type: "workflow", stayId: stay.id, field: "reviews", index, value: stay.reviews[index] });
+    return;
+  }
+  const copy = event.target.closest("[data-copy-resource]");
+  if (copy) {
+    const resource = resourceCards[Number(copy.dataset.copyResource)];
+    await navigator.clipboard.writeText(resource.copy);
+    setStatus(`Copied the sample “${resource.title}” message. Edit it to sound like you before using it.`);
+    return;
+  }
+  const shift = event.target.closest("[data-calendar-shift]");
+  if (shift) {
+    state.calendarDate.setUTCMonth(state.calendarDate.getUTCMonth() + Number(shift.dataset.calendarShift));
+    state.status = "";
+    renderDashboard();
+    return;
+  }
+  if (event.target.closest("[data-calendar-today]")) {
+    state.calendarDate = new Date(Date.UTC(2026, 6, 1));
+    state.status = "";
+    renderDashboard();
+    return;
+  }
+  if (event.target.closest("[data-reset-vendors]")) {
+    const filter = $("#vendor-filter");
+    if (filter) filter.value = "";
+    filterVendors("");
+    setStatus("Sample vendor list refreshed. No external sheet was contacted.");
+  }
+});
+
+$("#main-view").addEventListener("input", (event) => {
+  const note = event.target.closest("[data-note]");
+  if (note) {
+    const stay = state.stays[Number(note.dataset.stay)];
+    stay[note.dataset.note] = note.value;
+    setStatus(state.live ? "Saving your private note…" : "Sample note saved in this browser only. Refresh to reset it.");
+    emitMutation({ type: "note", stayId: stay.id, field: note.dataset.note, value: note.value });
+    return;
+  }
+  if (event.target.matches("#vendor-filter")) filterVendors(event.target.value);
+});
+
 $("#sync-demo").onclick = () => {
-  $("#demo-view-status").textContent = "Demo sync complete. Nothing left this browser and no real account was contacted.";
+  if (state.live) {
+    window.dispatchEvent(new Event("str-mission-control:refresh"));
+    return;
+  }
+  setStatus("Sample sync complete. Nothing left this browser and no real account was contacted.");
 };
 
 $("#refresh-demo").onclick = () => {
-  state.stays = freshDemoStays();
-  state.flags = demoFlags.map((flag) => ({ ...flag, resolved: false }));
-  state.activeView = "today";
-  renderDashboard();
-  $("#demo-view-status").textContent = "Demo refreshed. The original pretend data is back.";
+  if (state.live) {
+    window.dispatchEvent(new Event("str-mission-control:refresh"));
+    return;
+  }
+  resetDemo();
+  setStatus("Sample refreshed. The original pretend data is back.");
 };
 
 $("#add-flag").onclick = () => {
@@ -370,18 +570,20 @@ $("#add-flag-form").onsubmit = (event) => {
   event.preventDefault();
   const title = $("#new-flag-title").value.trim();
   if (!title) return;
-  state.flags.push({
-    id: `manual-${Date.now()}`,
+  const flag = {
+    id: `${state.live ? "private" : "sample"}-flag-${Date.now()}`,
     kind: "warm",
-    label: "Manual flag · demo only",
+    label: state.live ? "Manual flag" : "Manual flag · sample",
     title,
-    detail: "This pretend flag exists only in this browser tab. Refresh to remove it.",
+    detail: state.live ? "Private team flag." : "This sample flag exists only in this browser tab. Refresh to remove it.",
     resolved: false,
-  });
+  };
+  state.flags.push(flag);
   $("#add-flag-form").reset();
   $("#add-flag-form").classList.add("hidden");
   renderFlags();
-  $("#demo-view-status").textContent = "Pretend flag added. No real account, task, or message was changed.";
+  setStatus(state.live ? "Saving your private flag…" : "Sample flag added. No real account, task, or message changed.");
+  emitMutation({ type: "flag-create", flag });
 };
 
 $("#flag-list").onclick = (event) => {
@@ -391,7 +593,8 @@ $("#flag-list").onclick = (event) => {
   if (!flag) return;
   flag.resolved = true;
   renderFlags();
-  $("#demo-view-status").textContent = "Pretend flag resolved in this browser only. No real provider was contacted.";
+  setStatus(state.live ? "Saving the resolved private flag…" : "Sample flag resolved in this browser only.");
+  emitMutation({ type: "flag-resolve", flagId: flag.id });
 };
 
 window.STR_MISSION_CONTROL = {
@@ -408,8 +611,18 @@ window.STR_MISSION_CONTROL = {
     }));
     if (payload.businessName) state.config.businessName = payload.businessName;
     if (payload.propertyName) state.config.propertyName = payload.propertyName;
+    if (payload.metrics) state.metrics = { ...state.metrics, ...payload.metrics };
+    state.status = "";
     renderDashboard();
   },
+  setLiveMode(enabled) {
+    state.live = Boolean(enabled);
+    $("#disconnect-live").classList.toggle("hidden", !state.live);
+    state.status = "";
+    renderDashboard();
+  },
+  setStatus,
+  resetDemo,
 };
 
 renderDashboard();

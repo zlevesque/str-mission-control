@@ -1,30 +1,15 @@
 /*
-  STR Mission Control — reference copy of your customization file.
+  STR Mission Control — reference copy of your non-secret label file.
 
   Change the words between quotes. Keep real passwords, API keys, and guest
   details out of this file. This example is safe to share publicly.
 */
 
 window.STR_MISSION_CONTROL_CONFIG = {
-  businessName: "Maple Stay Co.",
-  propertyName: "The Maple House",
+  businessName: "Sample Stay Co.",
+  propertyName: "Sample Retreat",
   timezone: "America/New_York",
   theme: "linen",
-  // A private dashboard endpoint is okay here. API keys and secrets are not.
+  // A private Worker address is okay here. API keys and secrets are not.
   privateApiUrl: "",
-  modules: {
-    guestOps: true,
-    occupancy: true,
-    reviews: true,
-    maintenance: true,
-    revenue: true,
-  },
-  checklist: [
-    "Guest needs confirmed",
-    "House rules confirmed",
-    "Pet details confirmed",
-    "Personal touch planned",
-    "Pre-arrival message scheduled",
-    "Arrival prep complete",
-  ],
 };

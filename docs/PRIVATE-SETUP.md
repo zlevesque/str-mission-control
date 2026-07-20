@@ -1,87 +1,76 @@
-# Private setup — keep real data private and keep the design intact
+# Using a coding helper safely
 
-This page is for the moment you move beyond pretend demo data. It explains what **private setup** means, how to use the copied AI prompt safely, and how to check that nothing important was changed.
+You do not need an AI to make the dashboard. The complete dashboard is already in this repository.
 
-## The 30-second version
+You may use Codex, Claude Code, or another coding helper for the small installation jobs that feel annoying for a first-time user: installing the Cloudflare Worker tools, creating the Worker’s KV memory drawer, and running a deployment command.
 
-Your downloaded dashboard is the finished visual template. Do not ask an AI to remake it.
+This page shows the safe boundary.
 
-Instead:
+## The one-sentence rule
 
-1. Use the dashboard to choose your cards.
-2. Replace the project’s `config.js` with the settings file you downloaded.
-3. Click **Copy private setup prompt**.
-4. Give that prompt to Codex, Claude Code, or another coding AI with your downloaded project folder open.
-5. Let it create a separate private connection for your data.
+> A coding helper may work on the private Worker; you handle every login, permission screen, and secret value yourself.
 
-The AI may connect data **behind** the existing dashboard. It may not redesign the dashboard.
+## What the helper may do
 
-## What “private” means
-
-Think of the dashboard as a pretty front door and the Worker as the locked room behind it.
-
-- The front door is the public starter: its layout and fake demo data are safe to share.
-- The locked room is your private Cloudflare Worker: it holds the connection to Hospitable, optional PriceLabs data, and any real guest-operation information.
-- Your keys stay in Cloudflare’s secret storage. They never go into the front door, GitHub, or an AI chat.
-
-## Before you copy the prompt
-
-Do these simple things first:
-
-1. Download and unzip the project. [Start Here](START-HERE.md) shows every click.
-2. Open `index.html`, click **Build my dashboard**, and choose your cards.
-3. Click **Download my settings**.
-4. In your Downloads folder, drag the downloaded `config.js` into the project folder.
-5. When Finder or File Explorer asks whether to replace the old file, choose **Replace**.
-6. Double-click `index.html` again and make sure your business name, property name, and chosen cards are correct.
-
-You now have a personalized dashboard using fake sample data. That is the correct and safe starting point.
-
-## How to use the private setup prompt
-
-1. In the dashboard, click **Build my dashboard** again.
-2. Continue to the last screen.
-3. Click **Copy private setup prompt**. A small message should say it was copied.
-4. Open Codex, Claude Code, or your preferred coding AI.
-5. Open the **downloaded project folder** in that tool—not a blank new project and not a GitHub webpage.
-6. Paste the prompt.
-7. Tell the AI which connection you want first. Example: “Connect Hospitable first. Do not connect PriceLabs yet.”
-8. Tell it clearly: “Do not change the design-locked files. Do not ask me for, store, or display any secret.”
-
-Do not paste API keys, tokens, passwords, real guest names, reservation IDs, door codes, Wi-Fi details, or screenshots of sensitive settings into the chat.
-
-## What the AI is allowed to change
-
-| Safe to change or create | What it is for |
+| Safe job | Where it happens |
 | --- | --- |
-| `config.js` | Business name, property name, selected existing cards, labels, and the non-secret address of the private Worker |
-| `live-data-adapter.js` | Lets the existing dashboard display an authorized response from the private Worker |
-| `worker/` (new folder) | Private connection code, webhook checks, shared task data, and deployment instructions |
-| New private integration documentation | Explains how you deploy and test your own setup |
+| Read the installation instructions | `worker/README.md` |
+| Install normal Worker tooling | `worker/` folder |
+| Run `npx wrangler login` | Your computer; you complete the browser sign-in |
+| Create the Worker’s KV storage | Your Cloudflare account after you approve the login |
+| Paste a KV **identifier** into `worker/wrangler.jsonc` | `worker/` folder |
+| Deploy the Worker code | Your Cloudflare account after you approve the login |
 
-## What the AI must not change
+## What the helper must never do
 
-| Leave this alone | Why |
+| Never do this | Why |
 | --- | --- |
-| `index.html` | Page structure and the actual dashboard template |
-| `style.css` | Colors, typography, spacing, cards, and visual style |
-| `app.js` | The core dashboard behavior and configuration flow |
-| `.design-lock.json` | The saved fingerprints that protect the three files above |
+| Rebuild or redesign Mission Control | The complete template already exists. |
+| Edit `index.html`, `style.css`, or `app.js` during installation | Those are the protected dashboard experience. |
+| Ask for your Cloudflare, Hospitable, or PriceLabs password | A real tool never needs your password in chat. |
+| Ask you to paste an API key, secret, door code, Wi-Fi password, guest contact detail, or webhook address into chat | Those values can expose your property or guests. |
+| Save a secret into Git, `config.js`, `.env`, a screenshot, or a public note | Those places can be copied or published by mistake. |
 
-These rules are not cosmetic. They are how every host gets the same STR Mission Control experience instead of a slightly different AI-generated dashboard.
+## Safe way to start a helper
 
-## What a good private-setup result looks like
+1. Open the downloaded `str-mission-control-main` folder in Codex, Claude Code, or another coding helper.
+2. Say: “Please read `worker/README.md` and help me install the private Worker. Do not edit the dashboard files. Stop when I need to log in or enter a secret.”
+3. Let it explain the next command before it runs it.
+4. When it opens a Cloudflare login page, take over in your browser.
+5. When it asks for a secret value, do **not** put that value into chat. Add it yourself in Cloudflare’s **Variables and Secrets** screen instead.
 
-When the AI says it is done, pause before adding any secrets. Look in your project folder.
+That is enough. There is no builder prompt, design prompt, card-selection prompt, or file-replacement step.
 
-You should see:
+## The two moments you always do yourself
 
-- The original `index.html`, `style.css`, and `app.js` still present.
-- A `worker/` folder or clear Worker deployment instructions.
-- A changed `live-data-adapter.js` that talks only to your private Worker—not directly to Hospitable or PriceLabs from the browser.
-- A `config.js` that still contains names, choices, and an optional Worker address, but no secret values.
+### 1. Cloudflare sign-in and approval
 
-Then run this from the project folder:
+When the helper runs `npx wrangler login`, Cloudflare opens a normal browser page.
+
+1. Check that the address bar belongs to Cloudflare.
+2. Sign in normally.
+3. Read the approval page.
+4. Approve only if it says you are authorizing Wrangler on your own computer.
+5. Return to the helper after Cloudflare confirms it worked.
+
+You are approving a local command tool. You are not giving the chat your password.
+
+### 2. Secret values
+
+For this starter, the first two secrets are:
+
+- `DASHBOARD_ACCESS_TOKEN`
+- `HOSPITABLE_WEBHOOK_SECRET`
+
+Create two different long random strings in your password manager. Then enter them yourself in Cloudflare:
+
+**Workers & Pages → your Worker → Settings → Variables and Secrets → Add → Secret**
+
+Use [Live Setup](LIVE-SETUP-OUTLINE.md) for the full picture-led explanation of what each secret does and where it goes next.
+
+## How to check the helper did not change the template
+
+After installation, run this from the main project folder:
 
 ```text
 node scripts/check-design-lock.mjs
@@ -89,33 +78,8 @@ node scripts/check-design-lock.mjs
 
 Good result: **“Design lock passed.”**
 
-If it says a locked file changed, stop. Ask the AI to restore the locked file before moving forward. The integration can be fixed outside the design files.
+The helper should have added or changed files only inside `worker/`. If it changed a locked dashboard file, ask it to restore that file before continuing.
 
-## Where you add the real keys
+## If you do not want to use AI
 
-The AI can tell you the *names* of the secrets it expects. You personally add the secret values in Cloudflare’s Worker Secrets area.
-
-| Example secret name | What it holds | Who should see the value |
-| --- | --- | --- |
-| `HOSPITABLE_TOKEN` | Hospitable access token | Only the approved owner/admin |
-| `HOSPITABLE_WEBHOOK_SECRET` | Proof that a webhook came from Hospitable | Only the approved owner/admin |
-| `PRICELABS_API_KEY` | Optional PriceLabs Customer API key | Only the approved owner/admin |
-| `DASHBOARD_SESSION_SECRET` | The private dashboard’s login/session protection | Only the approved owner/admin |
-
-It is okay for the AI to write `HOSPITABLE_TOKEN` as a placeholder. It is **not** okay for the actual token value to appear in a prompt, file, Git commit, screenshot, or public repository.
-
-## The simplest safety test
-
-Before connecting a real stay:
-
-1. Deploy the Worker with its secrets stored privately in Cloudflare.
-2. Send one clearly fake test reservation through the Worker.
-3. Confirm it appears only on your private dashboard.
-4. Check the public GitHub repository. It must still show fake examples only.
-5. Remove the test and then connect the correct Hospitable property.
-
-For the full order of Cloudflare, webhooks, testing, and first data, read [Live Setup](LIVE-SETUP-OUTLINE.md).
-
-## Current status of this starter
-
-The design lock and safe places for live code are ready. A complete, click-by-click live deployment kit is still being built. Until the Worker starter, verified provider screens, and troubleshooting guide are included, this repository should be treated as a safe demo and a protected design template—not a one-click connection to real guest data.
+That is completely okay. Follow [worker/README.md](../worker/README.md) one command at a time, then use [Live Setup](LIVE-SETUP-OUTLINE.md) for the Cloudflare, Hospitable, and optional PriceLabs clicks.
