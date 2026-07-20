@@ -4,13 +4,25 @@
 
 STR Mission Control helps a host move from "I have too many tabs open" to one calm, useful dashboard. It starts with a safe fake-data demo, then lets each host choose the cards, labels, and workflow that match their property.
 
-## Start here
+## Start here — no coding required
 
-1. Open `index.html` in a browser.
-2. Select **Try the demo** to click through a pretend property. Nothing is connected and nothing is saved.
-3. Select **Build my dashboard** to choose the cards you want and download a starter configuration.
+This page is a **repository**: a public folder on the internet that holds all the project files. You do not need to understand GitHub, use a terminal, or make an account to try the demo.
 
-The beginner guide is in [docs/START-HERE.md](docs/START-HERE.md).
+### I just want to try the demo
+
+1. Near the top of this page, click the green **Code** button.
+2. Click **Download ZIP**. Your computer downloads one little package containing the project.
+3. Open your **Downloads** folder and double-click `str-mission-control-main.zip`. A regular folder with the same name appears.
+4. Open that new folder, then double-click **index.html**. If your computer asks which app to use, choose Chrome, Safari, or another web browser.
+5. Click **Try the demo**.
+
+That is it. The demo uses pretend names and pretend tasks; it does not connect to Hospitable or send anything anywhere. Refresh the page whenever you want a clean start.
+
+### I want a dashboard for my property later
+
+Start with the safe demo above. When you are ready, select **Build my dashboard**, choose your cards, and download your settings. The downloaded file stays on your computer until you choose to use it.
+
+Read the plain-English walkthrough in [docs/START-HERE.md](docs/START-HERE.md). It starts from the very first click.
 
 ## What this repository is
 

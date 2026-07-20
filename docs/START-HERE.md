@@ -1,18 +1,40 @@
-# Start Here
+# Start Here — even if you have never used GitHub
 
-You do not need to know code to explore this project.
+You do not need to know code to explore this project. You also do **not** need GitHub Desktop, a terminal, a Cloudflare account, or a Hospitable account for the safe demo.
 
-## The two big choices
+## First: get the project onto your computer
 
-### 1. I just want to look around
+GitHub is a website that stores project folders. This project is one of those folders. Here is how to take a copy:
 
-Open `index.html`, then click **Try the demo**.
+1. Go back to the main page for this project.
+2. Find the green button named **Code** near the top of the file list.
+3. Click **Code**, then click **Download ZIP**.
+4. Wait for the download to finish. On a Mac, open **Finder** and then **Downloads**. On Windows, open **File Explorer** and then **Downloads**.
+5. Double-click `str-mission-control-main.zip`. Your computer makes a new normal folder named `str-mission-control-main`.
+6. Open that new folder.
 
-Everything you see is pretend. Click the small task buttons, add a pretend repair flag, and refresh the page whenever you want a clean start.
+Nothing has been installed. A ZIP file is just a packed-up folder, like a suitcase. Double-clicking it unpacks the suitcase.
 
-### 2. I want a dashboard for my property
+## Next: open the safe demo
 
-Open `index.html`, then click **Build my dashboard**.
+1. Inside the `str-mission-control-main` folder, find the file named **index.html**.
+2. Double-click it. If your computer asks which app to use, choose Chrome, Safari, Edge, or another web browser.
+3. A page titled **STR Mission Control** opens.
+4. Click **Try the demo**.
+
+Everything on that page is pretend. The names, stays, percentages, and repair flags are examples only. Your clicks stay in that browser tab and reset when you refresh the page.
+
+### If it does not open as a webpage
+
+- Right-click `index.html`.
+- Choose **Open With**.
+- Pick Chrome, Safari, Edge, or your usual browser.
+
+Do not open `app.js` or `style.css`; those are helper files. `index.html` is the one that starts the demo.
+
+## When you want a dashboard for your own property
+
+Only after you have played with the demo, click **Build my dashboard**.
 
 1. Type your business name.
 2. Type your first property name.
@@ -20,7 +42,8 @@ Open `index.html`, then click **Build my dashboard**.
 4. Click **Preview my dashboard**.
 5. Click **Download my settings**.
 6. Click **Copy my builder prompt**.
-7. Paste the prompt and downloaded settings into Codex or Claude Code when you are ready to build your private dashboard.
+7. Save both items somewhere you can find later. They stay on your computer until you deliberately share or use them.
+8. Paste the builder prompt and your downloaded settings into Codex or Claude Code when you are ready to build a private version.
 
 ## What happens next?
 
