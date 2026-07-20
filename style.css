@@ -91,13 +91,30 @@ legend { font-size: 14px; font-weight: 650; padding: 0 5px; }
 .progress { background: var(--linen); border-radius: 999px; height: 8px; overflow: hidden; }
 .progress span { background: var(--fog); border-radius: inherit; display: block; height: 100%; }
 .text-button { background: transparent; border: 0; color: var(--timber); font-size: 12px; font-weight: 700; padding: 3px; }
-.flag-list { display: grid; gap: 10px; list-style: none; margin: 12px 0 0; padding: 0; }
-.flag-list li, .review-list li { color: var(--muted); font-size: 13px; }
+.flag-list { display: grid; gap: 10px; margin: 12px 0 0; }
+.review-list li { color: var(--muted); font-size: 13px; }
 .review-list { display: grid; gap: 10px; list-style: none; margin: 12px 0 0; padding: 0; }
 .flag-dot { border-radius: 50%; display: inline-block; height: 8px; margin-right: 8px; width: 8px; }
 .flag-dot.alert { background: var(--clay); }
 .flag-dot.warm { background: var(--timber); }
 .flag-dot.fog { background: var(--fog); }
+.outstanding-list { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+.outstanding-list li { align-items: flex-start; border-top: 1px solid var(--line); display: flex; gap: 8px; justify-content: space-between; padding-top: 10px; }
+.outstanding-list li:first-child { border-top: 0; padding-top: 0; }
+.outstanding-list strong { font-size: 13px; }
+.outstanding-list p { color: var(--muted); font-size: 12px; margin: 2px 0 0; }
+.outstanding-list .count { font-size: 10px; }
+.flags-card > .small-copy { margin-bottom: 0; }
+.add-flag-form { border: 1px dashed var(--line); border-radius: 9px; display: grid; gap: 8px; margin-top: 12px; padding: 10px; }
+.add-flag-form label { color: var(--muted); display: grid; font-size: 11px; font-weight: 650; gap: 5px; }
+.add-flag-form input { font-size: 12px; padding: 7px 8px; }
+.add-flag-form div { display: flex; gap: 10px; }
+.flag-card { border: 1px solid var(--line); border-left: 3px solid var(--fog); border-radius: 9px; padding: 12px; }
+.flag-card.alert { background: var(--clay-soft); border-left-color: var(--clay); }
+.flag-card.warm { background: var(--timber-soft); border-left-color: var(--timber); }
+.flag-card h4 { font-size: 14px; margin: 4px 0; }
+.flag-card > p:not(.eyebrow) { color: var(--muted); font-size: 12px; margin: 0; }
+.resolve-flag { background: transparent; border: 0; border-bottom: 1px solid currentColor; color: var(--stone); font-size: 12px; margin-top: 8px; padding: 0; }
 .source-row { align-items: baseline; display: flex; gap: 8px; margin: 9px 0; }
 .source-row strong { font-size: 21px; }
 .source-row span { color: var(--muted); font-size: 12px; }

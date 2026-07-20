@@ -24,6 +24,8 @@ Start with the safe demo above. When you are ready, select **Build my dashboard*
 
 Read the plain-English walkthrough in [docs/START-HERE.md](docs/START-HERE.md). It starts from the very first click.
 
+Using ChatGPT, Codex, Claude, or another AI builder? Read [docs/AI-TOOLS-AND-PRICELABS.md](docs/AI-TOOLS-AND-PRICELABS.md) before trying to connect PriceLabs. The demo and builder prompt work with any tool; direct PriceLabs MCP support is not the same thing as building your dashboard.
+
 ## What this repository is
 
 - A public, fake-data-only teaching artifact.
@@ -70,6 +72,7 @@ The production architecture will follow a safety-first pattern:
 ├── config.example.js          # The one file a host customizes first
 └── docs/
     ├── START-HERE.md          # Plain-English first steps
+    ├── AI-TOOLS-AND-PRICELABS.md # Which AI/PriceLabs path to use
     ├── LIVE-SETUP-OUTLINE.md  # Planned Cloudflare + Hospitable flow
     └── SECURITY.md            # What never goes in a public repo
 ```

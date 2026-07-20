@@ -29,7 +29,9 @@ Do not use one source for every number. The dashboard should label the source cl
 | Dynamic rates and minimum-stay guidance | PriceLabs Customer API | The private rate data that belongs in a real custom dashboard. |
 | Market occupancy, RevPAR, and demand trends | PriceLabs MCP / market tools | A comparison with the wider market, not the host's actual booked occupancy. |
 
-PriceLabs describes its **Customer API** as the option for custom dashboards and pricing workflows. Its **MCP** is for an AI assistant to query listings, analyze performance, and update pricing with natural language. Keep both connections behind the private Worker; never call PriceLabs directly from a public browser page.
+PriceLabs describes its **Customer API** as the option for custom dashboards and pricing workflows. Put that API key in the private Worker; never call PriceLabs directly from a public browser page.
+
+PriceLabs' **MCP** is a separate, AI-assistant connection for querying listings, analyzing performance, and updating pricing with natural language. Its direct connector is currently beta and Claude-first, with additional AI clients planned. It is not needed to build or run this template. Read [AI Tools and PriceLabs](AI-TOOLS-AND-PRICELABS.md) before using it, and never paste MCP or API credentials into a prompt, public repository, or browser code.
 
 Useful official reading: [PriceLabs developer overview](https://developers.pricelabs.co/home/overview) and [PriceLabs MCP market tools](https://developers.pricelabs.co/mcp/tools/market-and-insights).
 

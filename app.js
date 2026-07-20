@@ -6,6 +6,23 @@ const demoStays = [
   { guest: "Sam Okafor", dates: "Fri → Tue", occasion: "Birthday trip", done: [true, false, true, false, true, false] },
 ];
 
+const demoFlags = [
+  {
+    id: "hot-tub",
+    kind: "alert",
+    label: "Guest report · auto-detected demo",
+    title: "Guest report: hot tub is cold",
+    detail: "This shows the kind of flag a private dashboard could create after a guest mentions an issue.",
+  },
+  {
+    id: "supplies",
+    kind: "warm",
+    label: "Supply reorder · manual demo",
+    title: "Restock paper towels + coffee pods",
+    detail: "This is a made-up manual supply flag. It stays in this browser until you resolve or refresh it.",
+  },
+];
+
 const demoViewCopy = {
   today: "Demo view: Today. Sync and Refresh use pretend data only.",
   week: "Demo view: Week. In a real dashboard, this groups arrivals, tasks, and reviews by week.",
@@ -37,6 +54,7 @@ const state = {
     ],
   },
   stays: demoStays.map((stay) => ({ ...stay, done: [...stay.done] })),
+  flags: demoFlags.map((flag) => ({ ...flag, resolved: false })),
   activeView: "today",
 };
 
@@ -70,12 +88,26 @@ function applyModules() {
     guestOps: "#guest-ops-module",
     occupancy: "#occupancy-module",
     reviews: "#reviews-module",
-    maintenance: "#maintenance-module",
+    maintenance: ["#outstanding-module", "#maintenance-module"],
     revenue: "#revenue-module",
   };
-  Object.entries(map).forEach(([key, selector]) => {
-    $(selector).classList.toggle("hidden", !state.config.modules[key]);
+  Object.entries(map).forEach(([key, selectors]) => {
+    (Array.isArray(selectors) ? selectors : [selectors]).forEach((selector) => {
+      $(selector).classList.toggle("hidden", !state.config.modules[key]);
+    });
   });
+}
+
+function renderFlags() {
+  const openFlags = state.flags.filter((flag) => !flag.resolved);
+  $("#flag-list").innerHTML = openFlags.map((flag) => `
+    <article class="flag-card ${esc(flag.kind)}">
+      <p class="eyebrow">${esc(flag.label)}</p>
+      <h4>${esc(flag.title)}</h4>
+      <p>${esc(flag.detail)}</p>
+      <button class="resolve-flag" type="button" data-resolve-flag="${esc(flag.id)}">Resolve</button>
+    </article>`).join("");
+  $("#no-flags").classList.toggle("hidden", openFlags.length !== 0);
 }
 
 function renderDashboard() {
@@ -103,6 +135,7 @@ function renderDashboard() {
   document.querySelectorAll("[data-view]").forEach((button) => {
     button.classList.toggle("active", button.dataset.view === state.activeView);
   });
+  renderFlags();
   applyModules();
 }
 
@@ -128,10 +161,12 @@ Use this configuration:
 Must include these default operating controls:
 - Six guest-priming tasks: guest needs, house rules, pet details, personal touch, pre-arrival message, and arrival preparation.
 - A review workflow for guest-review reminder, host review, and public response.
+- An Outstanding list that shows fake unfinished work with remaining counts.
+- A Flags area with a manual Add action, a fake auto-detected guest issue, a fake manual supply-reorder flag, and Resolve actions. Do not send a real guest message or create a live provider action until the host has privately connected their own account.
 - View tabs: Today, Week, Upcoming, Calendar, Completed, and Resources.
 - Sync and Refresh buttons. In the demo they must clearly use fake data; in production they must call a secure server-side source.
 - Actual property occupancy calculated from Hospitable reservation nights divided by available nights.
-- A PriceLabs section for private dynamic-rate data and market context. Use the PriceLabs Customer API for a deployed dashboard, and use PriceLabs MCP only for AI-assisted analysis. Never expose either provider's key in browser code.
+- A PriceLabs section for private dynamic-rate data and market context. Use the PriceLabs Customer API for a deployed dashboard, and use PriceLabs MCP for separately authorized AI-assisted analysis or actions. Never expose either provider's key in browser code.
 
 Start with a fake-data demo. Then explain, in child-friendly numbered steps, how to connect a real Hospitable property through a private Cloudflare Worker. Keep API keys, guest contact information, door codes, Wi-Fi details, and webhook secrets out of static files and out of Git. Use shared server-side state for checklist updates.`;
 }
@@ -159,7 +194,7 @@ $("#edit-choices").onclick = () => show("#builder");
 
 $("#copy-prompt").onclick = async () => {
   await navigator.clipboard.writeText(builderPrompt());
-  $("#copy-status").textContent = "Copied. Paste it into Codex or Claude Code when you are ready to build your private version.";
+  $("#copy-status").textContent = "Copied. Paste it into your preferred AI builder when you are ready to build your private version.";
 };
 
 $("#stay-list").onclick = (event) => {
@@ -184,17 +219,48 @@ $("#sync-demo").onclick = () => {
 
 $("#refresh-demo").onclick = () => {
   state.stays = demoStays.map((stay) => ({ ...stay, done: [...stay.done] }));
+  state.flags = demoFlags.map((flag) => ({ ...flag, resolved: false }));
   state.activeView = "today";
   renderDashboard();
   $("#demo-view-status").textContent = "Demo refreshed. The original pretend data is back.";
 };
 
 $("#add-flag").onclick = () => {
-  const title = window.prompt("What needs attention? This is only a demo.");
+  $("#add-flag-form").classList.remove("hidden");
+  $("#new-flag-title").focus();
+};
+
+$("#cancel-flag").onclick = () => {
+  $("#add-flag-form").reset();
+  $("#add-flag-form").classList.add("hidden");
+};
+
+$("#add-flag-form").onsubmit = (event) => {
+  event.preventDefault();
+  const title = $("#new-flag-title").value.trim();
   if (!title) return;
-  const item = document.createElement("li");
-  item.innerHTML = `<span class="flag-dot alert"></span>${esc(title)}`;
-  $("#flag-list").appendChild(item);
+  state.flags.push({
+    id: `manual-${Date.now()}`,
+    kind: "warm",
+    label: "Manual flag · demo only",
+    title,
+    detail: "This pretend flag exists only in this browser tab. Refresh to remove it.",
+    resolved: false,
+  });
+  $("#add-flag-form").reset();
+  $("#add-flag-form").classList.add("hidden");
+  renderFlags();
+  $("#demo-view-status").textContent = "Pretend flag added. No real account, task, or message was changed.";
+};
+
+$("#flag-list").onclick = (event) => {
+  const button = event.target.closest("[data-resolve-flag]");
+  if (!button) return;
+  const flag = state.flags.find((item) => item.id === button.dataset.resolveFlag);
+  if (!flag) return;
+  flag.resolved = true;
+  renderFlags();
+  $("#demo-view-status").textContent = "Pretend flag resolved in this browser only. No real provider was contacted.";
 };
 
 renderDashboard();

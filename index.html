@@ -108,12 +108,25 @@
               </ul>
             </section>
 
-            <section class="mini-card" id="maintenance-module">
-              <div class="section-heading compact"><div><p class="eyebrow">Flags</p><h3>Repairs & supplies</h3></div><button class="text-button" id="add-flag">+ Add</button></div>
-              <ul id="flag-list" class="flag-list">
-                <li><span class="flag-dot alert"></span>Check patio string lights</li>
-                <li><span class="flag-dot warm"></span>Restock coffee pods</li>
+            <section class="mini-card" id="outstanding-module">
+              <div class="section-heading compact"><div><p class="eyebrow">Outstanding</p><h3>What still needs a nudge</h3></div><span class="count">Demo</span></div>
+              <ul class="outstanding-list">
+                <li><div><strong>Priya Raman</strong><p>Guest review reminder · public response</p></div><span class="count">2 left</span></li>
+                <li><div><strong>Sam Okafor</strong><p>Pre-arrival message</p></div><span class="count">1 left</span></li>
+                <li><div><strong>Jordan Blake</strong><p>Arrival preparation</p></div><span class="count">1 left</span></li>
               </ul>
+              <p class="small-copy">Made-up examples only. A private version can calculate this from its shared checklist.</p>
+            </section>
+
+            <section class="mini-card flags-card" id="maintenance-module">
+              <div class="section-heading compact"><div><p class="eyebrow">Flags</p><h3>Repairs & supplies</h3></div><button class="text-button" type="button" id="add-flag">+ Add</button></div>
+              <p class="small-copy">Demo flags help a host notice guest-reported issues and supply reorders. Nothing is sent anywhere.</p>
+              <form class="add-flag-form hidden" id="add-flag-form">
+                <label for="new-flag-title">New pretend flag (no guest names or private details)<input id="new-flag-title" maxlength="80" placeholder="Example: Restock extra towels" /></label>
+                <div><button class="text-button" type="submit">Add demo flag</button><button class="text-button" type="button" id="cancel-flag">Cancel</button></div>
+              </form>
+              <div id="flag-list" class="flag-list"></div>
+              <p class="small-copy hidden" id="no-flags">All pretend flags are resolved.</p>
             </section>
 
             <section class="mini-card" id="revenue-module">
@@ -130,7 +143,7 @@
       <section class="next-step hidden" id="next-step">
         <p class="eyebrow">Step 2 of 2</p>
         <h2>You have a dashboard shape.</h2>
-        <p>Download your settings, then use the builder prompt to create your private version with Codex or Claude Code.</p>
+        <p>Download your settings, then use the builder prompt to create your private version with your preferred AI builder.</p>
         <div class="hero-actions">
           <button class="button primary" id="copy-prompt">Copy my builder prompt</button>
           <button class="button secondary" id="edit-choices">Edit my choices</button>

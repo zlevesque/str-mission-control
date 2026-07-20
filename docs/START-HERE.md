@@ -43,7 +43,7 @@ Only after you have played with the demo, click **Build my dashboard**.
 5. Click **Download my settings**.
 6. Click **Copy my builder prompt**.
 7. Save both items somewhere you can find later. They stay on your computer until you deliberately share or use them.
-8. Paste the builder prompt and your downloaded settings into Codex or Claude Code when you are ready to build a private version.
+8. Choose the AI builder you want to use, then paste in the builder prompt and your downloaded settings when you are ready to build a private version. [AI Tools and PriceLabs](AI-TOOLS-AND-PRICELABS.md) explains the safe PriceLabs path for Claude, ChatGPT/Codex, and other tools.
 
 ## What happens next?
 
