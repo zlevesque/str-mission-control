@@ -1,10 +1,61 @@
 const defaultConfig = window.STR_MISSION_CONTROL_CONFIG || {};
 
 const demoStays = [
-  { guest: "Jordan Blake", dates: "Today → Sun", occasion: "Family reunion", done: [true, true, true, true, true, true] },
-  { guest: "Priya Raman", dates: "Tomorrow → Mon", occasion: "Graduation weekend", done: [true, true, true, true, false, false] },
-  { guest: "Sam Okafor", dates: "Fri → Tue", occasion: "Birthday trip", done: [true, false, true, false, true, false] },
+  {
+    guest: "Jordan Blake",
+    channel: "Airbnb",
+    dates: "Today → Sun",
+    nights: "3 nights",
+    party: "4 adults · 2 pets",
+    occasion: "Family reunion",
+    mentioned: ["family reunion", "two dogs"],
+    prepItems: "Set out extra dog bowls and the large patio table.",
+    personalTouches: "Welcome note with a few easy family-friendly ideas.",
+    done: [true, true, true, true, true, true],
+    priming: [true, false, false, false],
+    reviews: [false, false, false],
+  },
+  {
+    guest: "Priya Raman",
+    channel: "Airbnb",
+    dates: "Tomorrow → Mon",
+    nights: "3 nights",
+    party: "3 adults · 1 pet",
+    occasion: "Graduation weekend",
+    mentioned: ["graduation", "celebrate"],
+    prepItems: "Leave space for flowers and a small celebration dessert.",
+    personalTouches: "Local coffee-shop suggestion for the graduate's family.",
+    done: [true, true, true, true, false, false],
+    priming: [false, false, false, false],
+    reviews: [false, false, false],
+  },
+  {
+    guest: "Sam Okafor",
+    channel: "Airbnb",
+    dates: "Fri → Tue",
+    nights: "4 nights",
+    party: "2 adults · 1 pet",
+    occasion: "Birthday trip",
+    mentioned: ["birthday", "first visit"],
+    prepItems: "Pet bed, a few extra towels, and a simple cake stand.",
+    personalTouches: "Made a short local-walk list for their first visit.",
+    done: [true, false, true, false, true, false],
+    priming: [true, false, false, false],
+    reviews: [false, false, false],
+  },
 ];
+
+const primingSteps = ["Check-up · day 1", "Pre-checkout", "Post-checkout", "Friends & family offer"];
+const reviewSteps = ["Guest review", "Host review", "Response"];
+
+function freshDemoStays() {
+  return demoStays.map((stay) => ({
+    ...stay,
+    done: [...stay.done],
+    priming: [...stay.priming],
+    reviews: [...stay.reviews],
+  }));
+}
 
 const demoFlags = [
   {
@@ -53,7 +104,7 @@ const state = {
       "Arrival prep complete",
     ],
   },
-  stays: demoStays.map((stay) => ({ ...stay, done: [...stay.done] })),
+  stays: freshDemoStays(),
   flags: demoFlags.map((flag) => ({ ...flag, resolved: false })),
   activeView: "today",
 };
@@ -110,6 +161,14 @@ function renderFlags() {
   $("#no-flags").classList.toggle("hidden", openFlags.length !== 0);
 }
 
+function renderWorkflowSteps(steps, completedSteps, workflow, stayIndex) {
+  return steps.map((label, stepIndex) => {
+    const complete = completedSteps[stepIndex];
+    const nextArrow = stepIndex < steps.length - 1 ? '<span class="workflow-arrow" aria-hidden="true">→</span>' : "";
+    return `<button class="workflow-step ${complete ? "done" : ""}" type="button" data-stay="${stayIndex}" data-${workflow}="${stepIndex}">${complete ? "✓ " : ""}${esc(label)}</button>${nextArrow}`;
+  }).join("");
+}
+
 function renderDashboard() {
   $("#dashboard-business").textContent = state.config.businessName;
   $("#dashboard-title").textContent = `${state.config.propertyName} · Mission Control`;
@@ -126,9 +185,22 @@ function renderDashboard() {
       <button class="task ${stay.done[itemIndex] ? "done" : ""}" data-stay="${stayIndex}" data-task="${itemIndex}">
         <span>${stay.done[itemIndex] ? "✓" : ""}</span>${esc(label)}
       </button>`).join("");
+    const mentioned = stay.mentioned.map((tag) => `<span class="mention-tag">${esc(tag)}</span>`).join("");
     return `<article class="stay-card">
-      <div class="stay-head"><div><h4>${esc(stay.guest)}</h4><p>${esc(stay.dates)} · ${esc(stay.occasion)}</p></div><span class="count">${complete}/${state.config.checklist.length}</span></div>
+      <div class="stay-head">
+        <div>
+          <div class="stay-name"><h4>${esc(stay.guest)}</h4><span class="channel-badge">${esc(stay.channel)}</span></div>
+          <p>${esc(stay.party)}</p>
+        </div>
+        <div class="stay-timing"><p>${esc(stay.dates)} · ${esc(stay.nights)}</p><span class="count">${complete}/${state.config.checklist.length} done</span></div>
+      </div>
+      <div class="mentioned-row"><span class="workflow-label">Mentioned:</span><div class="mention-tags">${mentioned}</div></div>
+      <p class="occasion-line">✨ <strong>${esc(stay.occasion)}</strong></p>
       <div class="task-row">${items}</div>
+      <label class="guest-note"><span>🛏 <strong>Prep items</strong></span><input type="text" data-stay="${stayIndex}" data-note="prepItems" aria-label="Prep items for ${esc(stay.guest)}" value="${esc(stay.prepItems)}" /></label>
+      <label class="guest-note"><span>📝 <strong>Personal touches</strong></span><input type="text" data-stay="${stayIndex}" data-note="personalTouches" aria-label="Personal touches for ${esc(stay.guest)}" value="${esc(stay.personalTouches)}" /></label>
+      <div class="workflow-row"><span class="workflow-label">5★ Priming</span><div class="workflow-steps">${renderWorkflowSteps(primingSteps, stay.priming, "priming", stayIndex)}</div></div>
+      <div class="workflow-row"><span class="workflow-label">Reviews</span><div class="workflow-steps">${renderWorkflowSteps(reviewSteps, stay.reviews, "review", stayIndex)}</div></div>
     </article>`;
   }).join("") || "<p class=\"small-copy\">No pretend checklists are complete yet. Try checking every box on one stay.</p>";
   $("#demo-view-status").textContent = demoViewCopy[state.activeView];
@@ -160,6 +232,7 @@ Use this configuration:
 
 Must include these default operating controls:
 - Six guest-priming tasks: guest needs, house rules, pet details, personal touch, pre-arrival message, and arrival preparation.
+- A richer guest card: a clearly labelled Mentioned tag row, an editable Prep items line, an editable Personal touches line for future reference, a 5-star priming flow (check-up day 1, pre-checkout, post-checkout, friends-and-family offer), and a three-step Reviews flow (guest review, host review, response). In the demo, use only fictional examples and browser-only edits; in production, save this shared work securely on the server.
 - A review workflow for guest-review reminder, host review, and public response.
 - An Outstanding list that shows fake unfinished work with remaining counts.
 - A Flags area with a manual Add action, a fake auto-detected guest issue, a fake manual supply-reorder flag, and Resolve actions. Do not send a real guest message or create a live provider action until the host has privately connected their own account.
@@ -198,13 +271,39 @@ $("#copy-prompt").onclick = async () => {
 };
 
 $("#stay-list").onclick = (event) => {
-  const button = event.target.closest("[data-stay]");
+  const button = event.target.closest("[data-task]");
   if (!button) return;
   const stay = state.stays[Number(button.dataset.stay)];
   const task = Number(button.dataset.task);
   stay.done[task] = !stay.done[task];
   renderDashboard();
 };
+
+$("#stay-list").addEventListener("click", (event) => {
+  const primingButton = event.target.closest("[data-priming]");
+  if (primingButton) {
+    const stay = state.stays[Number(primingButton.dataset.stay)];
+    const step = Number(primingButton.dataset.priming);
+    stay.priming[step] = !stay.priming[step];
+    renderDashboard();
+    return;
+  }
+  const reviewButton = event.target.closest("[data-review]");
+  if (reviewButton) {
+    const stay = state.stays[Number(reviewButton.dataset.stay)];
+    const step = Number(reviewButton.dataset.review);
+    stay.reviews[step] = !stay.reviews[step];
+    renderDashboard();
+  }
+});
+
+$("#stay-list").addEventListener("input", (event) => {
+  const note = event.target.closest("[data-note]");
+  if (!note) return;
+  const stay = state.stays[Number(note.dataset.stay)];
+  stay[note.dataset.note] = note.value;
+  $("#demo-view-status").textContent = "Pretend note saved in this browser only. A private dashboard would save it for the whole team.";
+});
 
 document.querySelectorAll("[data-view]").forEach((button) => {
   button.onclick = () => {
@@ -218,7 +317,7 @@ $("#sync-demo").onclick = () => {
 };
 
 $("#refresh-demo").onclick = () => {
-  state.stays = demoStays.map((stay) => ({ ...stay, done: [...stay.done] }));
+  state.stays = freshDemoStays();
   state.flags = demoFlags.map((flag) => ({ ...flag, resolved: false }));
   state.activeView = "today";
   renderDashboard();

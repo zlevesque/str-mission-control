@@ -75,15 +75,32 @@ legend { font-size: 14px; font-weight: 650; padding: 0 5px; }
 .section-heading h3, .mini-card h3 { font-size: 18px; margin: 4px 0 0; }
 .compact h3 { font-size: 15px; }
 .stay-list { display: grid; gap: 10px; margin-top: 18px; }
-.stay-card { border: 1px solid var(--line); border-left: 3px solid var(--clay); border-radius: 10px; padding: 15px; }
+.stay-card { border: 1px solid var(--line); border-left: 3px solid var(--clay); border-radius: 10px; padding: 15px 18px; }
 .stay-head { align-items: start; display: flex; justify-content: space-between; gap: 10px; }
 .stay-head h4 { margin: 0; }
 .stay-head p { color: var(--muted); font-size: 13px; margin: 3px 0 0; }
-.task-row { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 14px; }
+.stay-name { align-items: center; display: flex; flex-wrap: wrap; gap: 8px; }
+.channel-badge { border: 1px solid rgba(161, 115, 79, 0.38); border-radius: 5px; color: var(--timber); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 10px; letter-spacing: 0.08em; padding: 2px 5px; text-transform: uppercase; }
+.stay-timing { align-items: center; display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; text-align: right; }
+.mentioned-row, .workflow-row { align-items: center; display: flex; flex-wrap: wrap; gap: 9px; }
+.mentioned-row { margin-top: 12px; }
+.workflow-label { color: var(--muted); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; }
+.mention-tags, .workflow-steps { align-items: center; display: flex; flex-wrap: wrap; gap: 6px; }
+.mention-tag { background: var(--timber-soft); border: 1px solid rgba(161, 115, 79, 0.25); border-radius: 999px; color: var(--timber); font-size: 12px; padding: 3px 8px; }
+.occasion-line { border-bottom: 1px dashed var(--line); color: var(--timber); font-size: 13px; margin: 10px 0 0; padding-bottom: 8px; }
+.task-row { display: flex; flex-wrap: wrap; gap: 7px; margin: 9px 0 0; }
 .task { background: var(--paper); border: 1px solid var(--line); border-radius: 8px; color: var(--muted); font-size: 12px; padding: 7px 9px; }
 .task span { display: inline-grid; place-items: center; border: 1px solid var(--line); border-radius: 50%; height: 14px; margin-right: 5px; width: 14px; }
 .task.done { background: var(--fog-soft); border-color: rgba(125, 135, 114, 0.4); color: var(--fog); }
 .task.done span { background: var(--fog); border-color: var(--fog); color: white; }
+.guest-note { align-items: center; border-bottom: 1px dashed var(--line); color: var(--muted); display: flex; font-size: 13px; gap: 8px; padding: 8px 0; }
+.guest-note strong { color: var(--stone); font-weight: 600; }
+.guest-note input { background: transparent; border: 0; border-radius: 0; color: var(--muted); flex: 1; font-size: 13px; min-width: 180px; padding: 0; }
+.guest-note input:focus { border-bottom: 1px solid var(--fog); outline: 0; }
+.workflow-row { margin-top: 9px; }
+.workflow-step { background: var(--paper); border: 1px solid var(--line); border-radius: 7px; color: var(--muted); font-size: 12px; padding: 4px 8px; }
+.workflow-step.done { background: var(--timber); border-color: var(--timber); color: white; }
+.workflow-arrow { color: var(--muted); font-size: 12px; }
 .side-panel { display: grid; align-content: start; gap: 14px; }
 .metric { align-items: baseline; display: flex; gap: 8px; margin: 8px 0; }
 .metric strong { font-size: 32px; }
@@ -128,6 +145,9 @@ footer { border-top: 1px solid var(--line); color: var(--muted); font-size: 12px
   .hero { gap: 26px; min-height: auto; padding: 40px 0; }
   .hero h1 { font-size: 46px; }
   .dashboard-topbar, .dashboard-controls { align-items: flex-start; flex-direction: column; gap: 12px; }
+  .stay-head, .stay-timing { align-items: flex-start; flex-direction: column; text-align: left; }
+  .guest-note { align-items: flex-start; flex-direction: column; gap: 3px; }
+  .guest-note input { width: 100%; }
   main { padding: 18px 16px 56px; }
   .builder, .next-step { padding: 22px; }
 }

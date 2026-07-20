@@ -29,7 +29,7 @@ Using ChatGPT, Codex, Claude, or another AI builder? Read [docs/AI-TOOLS-AND-PRI
 ## What this repository is
 
 - A public, fake-data-only teaching artifact.
-- A simple configurator and dashboard prototype.
+- A simple configurator and dashboard prototype, including guest mentions, preparation notes, personal-touch notes, priming, and review follow-through.
 - The design and documentation foundation for a future Hospitable + Cloudflare deployment guide.
 
 ## What this repository is not yet
