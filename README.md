@@ -20,7 +20,7 @@ That is it. The demo uses pretend names and pretend tasks; it does not connect t
 
 ### I want a dashboard for my property later
 
-Start with the safe demo above. When you are ready, select **Build my dashboard**, choose your cards, and download your settings. The downloaded file stays on your computer until you choose to use it.
+Start with the safe demo above. When you are ready, select **Build my dashboard**, choose your cards, and download your `config.js` file. That file personalizes this exact starter; it does not generate a different dashboard design.
 
 Read the plain-English walkthrough in [docs/START-HERE.md](docs/START-HERE.md). It starts from the very first click.
 
@@ -31,6 +31,12 @@ Using ChatGPT, Codex, Claude, or another AI builder? Read [docs/AI-TOOLS-AND-PRI
 - A public, fake-data-only teaching artifact.
 - A simple configurator and dashboard prototype, including guest mentions, preparation notes, personal-touch notes, priming, and review follow-through.
 - The design and documentation foundation for a future Hospitable + Cloudflare deployment guide.
+
+## How the exact design stays intact
+
+The downloaded dashboard already contains the design. **Build my dashboard** only creates a `config.js` file with the host's name, property name, selected existing cards, and checklist labels. It does not ask an AI to recreate the page.
+
+If a host uses an AI setup helper, it should only work in `config.js`, `live-data-adapter.js`, and a private `worker/` folder. The layout, styles, and core dashboard files are design-locked. Read [docs/DESIGN-LOCK.md](docs/DESIGN-LOCK.md) for the simple rules.
 
 ## What this repository is not yet
 
@@ -67,11 +73,15 @@ The production architecture will follow a safety-first pattern:
 ```text
 .
 ├── index.html                 # Clickable fake-data demo + configurator
-├── app.js                     # Demo behavior and configuration export
-├── style.css                  # Calm, accessible dashboard design
-├── config.example.js          # The one file a host customizes first
+├── app.js                     # Locked dashboard behavior
+├── style.css                  # Locked dashboard design
+├── config.js                  # The active, safe personalization file
+├── live-data-adapter.js       # Safe workspace for a private data connection
+├── scripts/check-design-lock.mjs # Verifies the core files were not changed
 └── docs/
     ├── START-HERE.md          # Plain-English first steps
+    ├── DESIGN-LOCK.md         # What an AI setup helper may and may not edit
+    ├── PRIVATE-SETUP.md       # Where real data and secrets belong
     ├── AI-TOOLS-AND-PRICELABS.md # Which AI/PriceLabs path to use
     ├── LIVE-SETUP-OUTLINE.md  # Planned Cloudflare + Hospitable flow
     └── SECURITY.md            # What never goes in a public repo
@@ -79,7 +89,7 @@ The production architecture will follow a safety-first pattern:
 
 ## Contributing
 
-Keep every example fictional. Before opening a pull request, check that it contains no API tokens, property IDs, guest names, door codes, Wi-Fi details, or real screenshots.
+Keep every example fictional. Before opening a pull request, check that it contains no API tokens, property IDs, guest names, door codes, Wi-Fi details, or real screenshots. Run `node scripts/check-design-lock.mjs` after an AI setup helper finishes its work.
 
 ## License
 

@@ -1,8 +1,9 @@
 /*
-  STR Mission Control — reference copy of your customization file.
+  This is the active personalization file for your downloaded dashboard.
+  It is safe to change the names, cards, and checklist below.
 
-  Change the words between quotes. Keep real passwords, API keys, and guest
-  details out of this file. This example is safe to share publicly.
+  Never put an API key, password, webhook secret, real guest detail, door code,
+  or Wi-Fi detail in this file. A private Cloudflare Worker stores secrets.
 */
 
 window.STR_MISSION_CONTROL_CONFIG = {
@@ -10,7 +11,7 @@ window.STR_MISSION_CONTROL_CONFIG = {
   propertyName: "The Maple House",
   timezone: "America/New_York",
   theme: "linen",
-  // A private dashboard endpoint is okay here. API keys and secrets are not.
+  // Optional: a private, authenticated Worker endpoint. This URL is not a secret.
   privateApiUrl: "",
   modules: {
     guestOps: true,

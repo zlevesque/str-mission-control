@@ -40,14 +40,14 @@ Only after you have played with the demo, click **Build my dashboard**.
 2. Type your first property name.
 3. Check the cards you want.
 4. Click **Preview my dashboard**.
-5. Click **Download my settings**.
-6. Click **Copy my builder prompt**.
-7. Save both items somewhere you can find later. They stay on your computer until you deliberately share or use them.
-8. Choose the AI builder you want to use, then paste in the builder prompt and your downloaded settings when you are ready to build a private version. [AI Tools and PriceLabs](AI-TOOLS-AND-PRICELABS.md) explains the safe PriceLabs path for Claude, ChatGPT/Codex, and other tools.
+5. Click **Download my settings**. Your browser downloads a file named `config.js`.
+6. Open **Downloads**. Drag the new `config.js` file into the `str-mission-control-main` folder you opened earlier. If your computer asks whether to replace the existing `config.js`, choose **Replace**. This changes the name, property, and cards without changing the dashboard design.
+7. Double-click `index.html` again. You now see your chosen dashboard shape, still in the exact STR Mission Control style.
+8. Only when you are ready for real data, click **Copy private setup prompt**. It tells your preferred AI builder to set up the downloaded starter without redesigning it. [AI Tools and PriceLabs](AI-TOOLS-AND-PRICELABS.md) explains the safe PriceLabs path for Claude, ChatGPT/Codex, and other tools.
 
 ## What happens next?
 
-The demo is safe because it has no real connection. A real dashboard needs a private connection to Hospitable, which is covered in [LIVE-SETUP-OUTLINE.md](LIVE-SETUP-OUTLINE.md).
+The demo is safe because it has no real connection. A real dashboard needs a private connection to Hospitable, which is covered in [LIVE-SETUP-OUTLINE.md](LIVE-SETUP-OUTLINE.md). Read [PRIVATE-SETUP.md](PRIVATE-SETUP.md) before asking an AI helper to add it.
 
 The first live setup will eventually include screenshots for every click. Until that guide is complete, do not paste a Hospitable token, dashboard password, door code, Wi-Fi detail, or guest information into this public project.
 

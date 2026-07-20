@@ -57,6 +57,23 @@ function freshDemoStays() {
   }));
 }
 
+function normaliseStay(stay) {
+  return {
+    guest: stay.guest || "Demo guest",
+    channel: stay.channel || "Stay",
+    dates: stay.dates || "Dates to be confirmed",
+    nights: stay.nights || "0 nights",
+    party: stay.party || "Guest details to be confirmed",
+    occasion: stay.occasion || "Stay details",
+    mentioned: Array.isArray(stay.mentioned) ? stay.mentioned : [],
+    prepItems: stay.prepItems || "",
+    personalTouches: stay.personalTouches || "",
+    done: Array.isArray(stay.done) ? stay.done : [],
+    priming: Array.isArray(stay.priming) ? stay.priming : [],
+    reviews: Array.isArray(stay.reviews) ? stay.reviews : [],
+  };
+}
+
 const demoFlags = [
   {
     id: "hot-tub",
@@ -213,22 +230,37 @@ function renderDashboard() {
 
 function downloadConfig() {
   syncConfigFromForm();
-  const code = `window.STR_MISSION_CONTROL_CONFIG = ${JSON.stringify({ ...state.config, timezone: "America/New_York", theme: "linen" }, null, 2)};\n`;
+  const config = {
+    businessName: state.config.businessName,
+    propertyName: state.config.propertyName,
+    timezone: defaultConfig.timezone || "America/New_York",
+    theme: defaultConfig.theme || "linen",
+    privateApiUrl: "",
+    modules: state.config.modules,
+    checklist: state.config.checklist,
+  };
+  const code = `window.STR_MISSION_CONTROL_CONFIG = ${JSON.stringify(config, null, 2)};\n`;
   const link = document.createElement("a");
   link.href = URL.createObjectURL(new Blob([code], { type: "text/javascript" }));
-  link.download = "my-str-mission-control-config.js";
+  link.download = "config.js";
   link.click();
   URL.revokeObjectURL(link.href);
 }
 
 function builderPrompt() {
   const cards = Object.entries(state.config.modules).filter(([, enabled]) => enabled).map(([name]) => name).join(", ");
-  return `Build a private, mobile-friendly short-term-rental operations dashboard called "${state.config.propertyName} Mission Control" for ${state.config.businessName}.
+  return `Set up the downloaded STR Mission Control starter as a private dashboard for "${state.config.propertyName}" at ${state.config.businessName}. This is a configuration and private-integration task, NOT a UI-generation task.
 
 Use this configuration:
 - Modules: ${cards}
 - Guest checklist: ${state.config.checklist.join("; ")}
-- Design: calm, warm, simple, and accessible. Avoid generic SaaS blue.
+
+Non-negotiable design lock:
+- Do not redesign, replace, move, or restyle the dashboard.
+- Do not edit index.html, style.css, or app.js. They are the exact STR Mission Control design and core behavior.
+- Keep the guest-card order, typography, warm linen palette, tabs, card spacing, Mentioned tags, Prep items, Personal touches, 5-star Priming, Reviews, Outstanding, and Flags exactly as they are.
+- Only edit config.js, live-data-adapter.js, and files inside a new worker/ folder. Use config.js to show or hide the selected existing cards; do not create substitute cards.
+- Run node scripts/check-design-lock.mjs before handing back the completed dashboard. If it fails, restore the locked file instead of changing the design.
 
 Must include these default operating controls:
 - Six guest-priming tasks: guest needs, house rules, pet details, personal touch, pre-arrival message, and arrival preparation.
@@ -241,7 +273,7 @@ Must include these default operating controls:
 - Actual property occupancy calculated from Hospitable reservation nights divided by available nights.
 - A PriceLabs section for private dynamic-rate data and market context. Use the PriceLabs Customer API for a deployed dashboard, and use PriceLabs MCP for separately authorized AI-assisted analysis or actions. Never expose either provider's key in browser code.
 
-Start with a fake-data demo. Then explain, in child-friendly numbered steps, how to connect a real Hospitable property through a private Cloudflare Worker. Keep API keys, guest contact information, door codes, Wi-Fi details, and webhook secrets out of static files and out of Git. Use shared server-side state for checklist updates.`;
+Start with the existing fake-data demo. Then explain, in child-friendly numbered steps, how to connect a real Hospitable property through a private Cloudflare Worker. Put all Hospitable and PriceLabs keys, webhook secrets, guest contact information, door codes, and Wi-Fi details in the private Worker or its secret store—never config.js, live-data-adapter.js, browser code, or Git. Use shared server-side state for checklist updates and notes.`;
 }
 
 $("#try-demo").onclick = () => {
@@ -267,7 +299,7 @@ $("#edit-choices").onclick = () => show("#builder");
 
 $("#copy-prompt").onclick = async () => {
   await navigator.clipboard.writeText(builderPrompt());
-  $("#copy-status").textContent = "Copied. Paste it into your preferred AI builder when you are ready to build your private version.";
+  $("#copy-status").textContent = "Copied. Paste it into your preferred AI builder only when you are ready to add a private data connection.";
 };
 
 $("#stay-list").onclick = (event) => {
@@ -360,6 +392,24 @@ $("#flag-list").onclick = (event) => {
   flag.resolved = true;
   renderFlags();
   $("#demo-view-status").textContent = "Pretend flag resolved in this browser only. No real provider was contacted.";
+};
+
+window.STR_MISSION_CONTROL = {
+  replaceDashboardData(payload) {
+    if (!payload || typeof payload !== "object") return;
+    if (Array.isArray(payload.stays)) state.stays = payload.stays.map(normaliseStay);
+    if (Array.isArray(payload.flags)) state.flags = payload.flags.map((flag, index) => ({
+      id: flag.id || `private-flag-${index}`,
+      kind: flag.kind === "alert" ? "alert" : "warm",
+      label: flag.label || "Private flag",
+      title: flag.title || "Needs attention",
+      detail: flag.detail || "",
+      resolved: Boolean(flag.resolved),
+    }));
+    if (payload.businessName) state.config.businessName = payload.businessName;
+    if (payload.propertyName) state.config.propertyName = payload.propertyName;
+    renderDashboard();
+  },
 };
 
 renderDashboard();
