@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="A fake-data STR operations dashboard demo and configurator." />
+    <title>STR Mission Control</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="wordmark" href="#top">STR <span>Mission Control</span></a>
+      <p>Dashboard starter for short-term-rental hosts</p>
+    </header>
+
+    <main id="top">
+      <section class="hero" id="welcome">
+        <div class="hero-copy">
+          <p class="eyebrow">A calm home for busy hosts</p>
+          <h1>See your stays, tasks, and loose ends in one place.</h1>
+          <p class="lede">Click around a pretend dashboard first. When it feels useful, choose what belongs on your own version.</p>
+          <div class="hero-actions">
+            <button class="button primary" id="try-demo">Try the demo</button>
+            <button class="button secondary" id="build-mine">Build my dashboard</button>
+          </div>
+          <p class="microcopy">No login. No Hospitable account. No real guest data.</p>
+        </div>
+        <div class="hero-card">
+          <span class="hero-icon">⌘</span>
+          <p><strong>Practice mode</strong></p>
+          <p>The demo looks live, but every name, stay, and task is made up. Your clicks reset when you refresh.</p>
+        </div>
+      </section>
+
+      <section class="builder hidden" id="builder" aria-labelledby="builder-title">
+        <div>
+          <p class="eyebrow">Step 1 of 2</p>
+          <h2 id="builder-title">Pick what you want to see.</h2>
+          <p>There are no wrong answers. You can change these later.</p>
+        </div>
+        <form id="builder-form" class="builder-form">
+          <label>Business name<input id="business-name" value="Maple Stay Co." maxlength="50" /></label>
+          <label>First property name<input id="property-name" value="The Maple House" maxlength="50" /></label>
+          <fieldset>
+            <legend>Choose your dashboard cards</legend>
+            <label class="choice"><input type="checkbox" data-module="guestOps" checked /> Guest arrivals and prep</label>
+            <label class="choice"><input type="checkbox" data-module="occupancy" checked /> Occupancy snapshot</label>
+            <label class="choice"><input type="checkbox" data-module="reviews" checked /> Review follow-up</label>
+            <label class="choice"><input type="checkbox" data-module="maintenance" checked /> Repairs and supplies</label>
+            <label class="choice"><input type="checkbox" data-module="revenue" /> Revenue snapshot</label>
+          </fieldset>
+          <div class="builder-actions">
+            <button class="button primary" type="submit">Preview my dashboard</button>
+            <button class="button secondary" type="button" id="download-config">Download my settings</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="dashboard hidden" id="dashboard" aria-live="polite">
+        <div class="dashboard-topbar">
+          <div>
+            <p class="eyebrow" id="dashboard-business">Maple Stay Co.</p>
+            <h2 id="dashboard-title">The Maple House · Mission Control</h2>
+          </div>
+          <div class="demo-pill">● Demo data</div>
+        </div>
+
+        <div class="dashboard-grid">
+          <section class="main-panel" id="guest-ops-module">
+            <div class="section-heading">
+              <div><p class="eyebrow">Today</p><h3>Guest ops</h3></div>
+              <span class="count" id="stay-count"></span>
+            </div>
+            <div id="stay-list" class="stay-list"></div>
+          </section>
+
+          <aside class="side-panel">
+            <section class="mini-card" id="occupancy-module">
+              <p class="eyebrow">Next 30 days</p>
+              <div class="metric"><strong>67%</strong><span>occupied</span></div>
+              <div class="progress"><span style="width: 67%"></span></div>
+              <p class="small-copy">A simple snapshot. Connect your data later for the real number.</p>
+            </section>
+
+            <section class="mini-card" id="reviews-module">
+              <p class="eyebrow">Reviews</p>
+              <h3>2 stays need follow-up</h3>
+              <p class="small-copy">Keep the guest review, host review, and response in one calm checklist.</p>
+            </section>
+
+            <section class="mini-card" id="maintenance-module">
+              <div class="section-heading compact"><div><p class="eyebrow">Flags</p><h3>Repairs & supplies</h3></div><button class="text-button" id="add-flag">+ Add</button></div>
+              <ul id="flag-list" class="flag-list">
+                <li><span class="flag-dot alert"></span>Check patio string lights</li>
+                <li><span class="flag-dot warm"></span>Restock coffee pods</li>
+              </ul>
+            </section>
+
+            <section class="mini-card hidden" id="revenue-module">
+              <p class="eyebrow">Revenue</p>
+              <h3>Connect your pricing tool</h3>
+              <p class="small-copy">This module is a placeholder until you choose a data source.</p>
+            </section>
+          </aside>
+        </div>
+      </section>
+
+      <section class="next-step hidden" id="next-step">
+        <p class="eyebrow">Step 2 of 2</p>
+        <h2>You have a dashboard shape.</h2>
+        <p>Download your settings, then use the builder prompt to create your private version with Codex or Claude Code.</p>
+        <div class="hero-actions">
+          <button class="button primary" id="copy-prompt">Copy my builder prompt</button>
+          <button class="button secondary" id="edit-choices">Edit my choices</button>
+        </div>
+        <p class="microcopy" id="copy-status"></p>
+      </section>
+    </main>
+
+    <footer>Built as a fake-data teaching demo. Never paste keys, guest data, door codes, or Wi-Fi details into a public repository.</footer>
+    <script src="config.example.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
