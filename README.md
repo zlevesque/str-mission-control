@@ -19,6 +19,8 @@ Everything you see is pretend. Refresh the page for a clean sample start.
 
 Read [Start Here](docs/START-HERE.md) if you want the very first-click walkthrough.
 
+Want the story of how this template evolved? Read [Project Progression](docs/PROJECT-PROGRESSION.md).
+
 ## Connect one private property
 
 When you are ready, click **Connect my live data** inside the template. The complete guide is [Live Setup](docs/LIVE-SETUP-OUTLINE.md).
@@ -70,6 +72,7 @@ If it says a design-locked file changed, restore that file. The Worker should ne
     ├── PRIVATE-SETUP.md
     ├── AI-TOOLS-AND-PRICELABS.md
     ├── DESIGN-LOCK.md
+    ├── PROJECT-PROGRESSION.md
     └── SECURITY.md
 ```
 
